@@ -160,27 +160,30 @@ def carregar_versionado(
 
     t = tabela
     vigente = t.c.valido_ate.is_(None)
-    mesma_chave = and_(*[t.c[k].is_not_distinct_from(tmp.c[k]) for k in chaves])
+    # "=" sempre que possível: IS NOT DISTINCT FROM impede índice e hash join
+    mesma_chave = and_(*[
+        t.c[k].is_not_distinct_from(tmp.c[k]) if t.c[k].nullable else t.c[k] == tmp.c[k]
+        for k in chaves
+    ])
     diferente = or_(*[t.c[c.name].is_distinct_from(tmp.c[c.name]) for c in dados if c.name not in chaves])
+    no_escopo = [t.c[k].is_(None) if v is None else t.c[k] == v for k, v in escopo.items()]
 
     alteradas = conn.execute(
         update(t).where(vigente, mesma_chave, diferente).values(valido_ate=func.now())
     ).rowcount
     removidas = conn.execute(
         update(t)
-        .where(
-            vigente,
-            *[t.c[k].is_not_distinct_from(v) for k, v in escopo.items()],
-            ~exists().where(mesma_chave),
-        )
+        .where(vigente, *no_escopo, ~exists().where(mesma_chave))
         .values(valido_ate=func.now())
     ).rowcount
-    inseridas = conn.execute(
+    # rowcount não é confiável em INSERT ... SELECT; conta pelo RETURNING
+    inseridas = len(conn.execute(
         pg_insert(t)
         .from_select(
             [c.name for c in dados] + ["coleta_id"],
             select(*tmp.c, literal(coleta_id, BigInteger)),
         )
         .on_conflict_do_nothing(index_elements=chaves, index_where=vigente)
-    ).rowcount
+        .returning(t.c.id)
+    ).all())
     return ResumoCarga(inseridas, alteradas, removidas)

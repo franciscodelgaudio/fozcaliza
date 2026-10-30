@@ -16,7 +16,7 @@ PAUSA_ENTRE_REQUISICOES = 0.5  # segundos; as APIs públicas são compartilhadas
 def cliente() -> httpx.Client:
     return httpx.Client(
         timeout=httpx.Timeout(120, connect=20),
-        headers={"User-Agent": "fozcaliza-etl (dados públicos de Foz do Iguaçu)"},
+        headers={"User-Agent": "fozcaliza-etl (dados publicos de Foz do Iguacu)"},  # só ASCII
         follow_redirects=True,
     )
 

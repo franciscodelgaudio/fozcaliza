@@ -1,0 +1,5 @@
+# Dependências do ETL (python -m etl), sem o FastAPI
+httpx>=0.27
+sqlalchemy>=2.0
+psycopg[binary]>=3.2
+pydantic-settings>=2.0

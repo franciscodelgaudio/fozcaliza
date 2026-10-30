@@ -16,6 +16,8 @@ from app.models.execucao import (
     Empenho,
     EmpenhoMovimento,
     Licitacao,
+    Obra,
+    ObraLocal,
     Vinculo,
 )
 from app.models.item import Item
@@ -68,6 +70,8 @@ __all__ = [
     "Municipio",
     "MunicipioAtributo",
     "NotaSerie",
+    "Obra",
+    "ObraLocal",
     "PeriodoReferencia",
     "PopulacaoObservacao",
     "Receita",

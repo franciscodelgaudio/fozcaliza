@@ -16,9 +16,11 @@ classificadas em ENTIDADES (poder e tipo) antes.
 
 import hashlib
 import io
+import re
 import json
 import logging
 import zipfile
+from collections import Counter
 from collections.abc import Callable, Iterator
 from datetime import date
 from decimal import Decimal
@@ -38,6 +40,8 @@ from app.models import (
     EmpenhoMovimento,
     Fonte,
     Licitacao,
+    Obra,
+    ObraLocal,
     UnidadeGestora,
     Vinculo,
 )
@@ -329,12 +333,73 @@ def carregar_relacionamentos(conn: Connection, arq: Arquivo, ano: int, coleta_id
     )}
 
 
+COORDENADA = re.compile(r"(\d+)\D+(\d+)'([\d.]+)\s*(Sul|Norte|Oeste|Leste)", re.IGNORECASE)
+
+
+# Foz do Iguaçu com folga de ~0,5°: coordenada fora disso é erro de digitação
+LIMITES_LAT = (Decimal("-26.1"), Decimal("-25.0"))
+LIMITES_LON = (Decimal("-55.1"), Decimal("-54.0"))
+
+
+def graus_decimais(texto_coord: str | None) -> tuple[Decimal | None, Decimal | None]:
+    """"25°31'32.9 Sul, 54°35'14.4 Oeste" -> (-25.525806, -54.587333)."""
+    partes = COORDENADA.findall(texto_coord or "")
+    if len(partes) != 2:
+        return None, None
+    saida = []
+    for g, m, s, hemisferio in partes:
+        valor = Decimal(g) + Decimal(m) / 60 + Decimal(s) / 3600
+        if hemisferio.lower() in ("sul", "oeste"):
+            valor = -valor
+        saida.append(valor.quantize(Decimal("0.000001")))
+    lat, lon = saida
+    if not (LIMITES_LAT[0] <= lat <= LIMITES_LAT[1] and LIMITES_LON[0] <= lon <= LIMITES_LON[1]):
+        log.warning("coordenada fora de Foz do Iguaçu, ignorada: %r", texto_coord)
+        return None, None
+    return lat, lon
+
+
+def carregar_obra(conn: Connection, arq: Arquivo, ano: int, coleta_id: int) -> dict:
+    unidade = unidades(conn)
+    obras = [
+        dict(
+            id_tce=int(r["idIntervencao"]), municipio_ibge=ID_ENTE, unidade_gestora_id=unidade(r["idPessoa"]),
+            ano=ano, numero=int(r["cdIntervencao"]), nome=obrigatorio(r, "nmIntervencao"),
+            valor=decimal(r.get("vlIntervencao")), data_inicio=data(r.get("dtInicio")),
+            prazo_dias=int(r["nrPrazoExecucao"]) if texto(r.get("nrPrazoExecucao")) else None,
+            regime=texto(r.get("dsTipoRegimeIntervencao")), situacao=obrigatorio(r, "dsSituacao"),
+            data_ultima_medicao=data(r.get("dtUltimaMedicao")),
+        )
+        for r in arq.registros("Intervencao")
+    ]
+    locais, sequencias = [], Counter()
+    for r in arq.registros("IntervencaoBem"):
+        sequencias[r["idIntervencao"]] += 1
+        lat, lon = graus_decimais(texto(r.get("dsCoordenadaGeografica")))
+        locais.append(dict(
+            municipio_ibge=ID_ENTE, ano=ano, obra_id_tce=int(r["idIntervencao"]),
+            sequencia=sequencias[r["idIntervencao"]], id_bem=int(r["idBem"]) if texto(r.get("idBem")) else None,
+            descricao=texto(r.get("dsBem")), logradouro=texto(r.get("nmLogradouro")),
+            coordenada=texto(r.get("dsCoordenadaGeografica")), latitude=lat, longitude=lon,
+        ))
+    escopo = {"municipio_ibge": ID_ENTE, "ano": ano}
+    return {
+        "obra": carregar_versionado(conn, Obra.__table__, obras, coleta_id, ["id_tce"], escopo),
+        "obra_local": carregar_versionado(
+            conn, ObraLocal.__table__, locais, coleta_id, ["obra_id_tce", "sequencia"], escopo
+        ),
+    }
+
+
+# detalhe (só a gestão atual) e temas pequenos (janela geral de 3 gestões)
 TEMAS = {
     "Despesa": carregar_despesa,
     "Contrato": carregar_contrato,
     "Licitacao": carregar_licitacao,
     "Relacionamentos": carregar_relacionamentos,
+    "Obra": carregar_obra,
 }
+TEMAS_JANELA_GERAL = {"Obra"}
 
 
 # --- coleta ------------------------------------------------------------------------

@@ -24,9 +24,24 @@ python -m etl siconfi                  # incremental: só o que foi entregue/ret
 python -m etl siconfi --desde 2024     # limita os exercícios
 python -m etl siconfi --forcar         # reverifica todos os relatórios
 python -m etl transformar              # classificação oficial + DESPESA (a partir dos brutos)
+python -m etl tce                      # empenhos, pagamentos, contratos e licitações (TCE-PR)
+python -m etl tce-painel               # apurações do TCE-PR (pessoal, dívida, educação, saúde), anos fechados
+python -m etl ibge                     # população: estimativas anuais e Censo (IBGE)
+python -m etl podar                    # apaga o que saiu da janela de gestões
 ```
 
-- **Siconfi** (RREO, RGF, DCA e extrato de entregas de Foz do Iguaçu, desde 2013):
+- **Janelas de dados** (em gestões municipais; `podar` remove o que sair delas):
+  - visão por função/subfunção (Siconfi): a gestão atual e as duas anteriores,
+    no máximo (hoje 2017–2028; em 2029 passa a 2021–2032);
+  - detalhe do TCE-PR (empenhos, pagamentos, contratos, licitações): só a
+    gestão atual, pelo volume (~60 MB por ano). Obras, por serem poucas,
+    seguem a janela geral. Pagamentos de restos a pagar de
+    empenhos anteriores à gestão ficam sem credor (em 2025, 2,1% do pago).
+- **TCE-PR** (Portal Informação para Todos): empenhos com credor, liquidações e
+  pagamentos datados, contratos e aditivos, licitações e os vínculos entre eles.
+  CPF de pessoa física é sempre guardado mascarado.
+
+- **Siconfi** (RREO, RGF, DCA e extrato de entregas de Foz do Iguaçu, na janela de gestões):
   as linhas vão, como publicadas, para `siconfi_linha`; o status de cada
   entrega, para `entrega_demonstrativo`.
 - **Incremental**: o extrato de entregas diz o que mudou; só esses relatórios

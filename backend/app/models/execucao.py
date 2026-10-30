@@ -9,6 +9,10 @@ Valores de empenho são os publicados (empenhado bruto, sem anulações). O
 quanto foi liquidado e pago, e quando, sai de EMPENHO_MOVIMENTO, cujas datas
 permitem separar o que foi pago no exercício do que foi pago depois (restos a
 pagar). Não compare somas daqui com o DCA sem esse recorte.
+
+Só a gestão atual é mantida (etl/janela.py). Pagamentos de restos a pagar de
+empenhos anteriores a ela estão em EMPENHO_MOVIMENTO, mas sem o empenho (e o
+credor) correspondente: em 2025, R$ 45 mi (2,1% do pago no ano).
 """
 
 from datetime import date
@@ -177,3 +181,53 @@ class Vinculo(DadoBruto, Base):
     tipo: Mapped[str]
     origem_id_tce: Mapped[BigInt]
     destino_id_tce: Mapped[BigInt]
+
+
+class Obra(DadoBruto, Base):
+    """Obras (intervenções) declaradas ao TCE-PR. O arquivo de cada ano traz as
+    obras iniciadas nele; a situação é a da data do arquivo. Valor de R$ 0,01
+    aparece quando a entidade não informou o valor de fato."""
+
+    __tablename__ = "obra"
+    __table_args__ = (
+        unico_versao_atual(__tablename__, "id_tce"),
+        Index("ix_obra_ano", "ano"),
+    )
+
+    id: Mapped[BigIntPK]
+    id_tce: Mapped[BigInt]
+    municipio_ibge: Mapped[int] = mapped_column(ForeignKey("municipio.codigo_ibge"))
+    unidade_gestora_id: Mapped[int] = mapped_column(ForeignKey("unidade_gestora.id"))
+    ano: Mapped[int]
+    numero: Mapped[int]
+    nome: Mapped[Texto]
+    valor: Mapped[Decimal | None] = mapped_column(Numeric(15, 2))
+    data_inicio: Mapped[date | None]
+    prazo_dias: Mapped[int | None]
+    regime: Mapped[str | None]  # Direto | Indireto
+    situacao: Mapped[str]  # Em andamento | Concluída | Paralisada | Não iniciada
+    data_ultima_medicao: Mapped[date | None]
+
+
+class ObraLocal(DadoBruto, Base):
+    """Bens (locais) de cada obra, com as coordenadas como publicadas e
+    convertidas para graus decimais (negativos: Sul e Oeste). `sequencia` é a
+    posição do local na obra: até 2021 a fonte não trazia o id do bem."""
+
+    __tablename__ = "obra_local"
+    __table_args__ = (
+        unico_versao_atual(__tablename__, "obra_id_tce", "sequencia"),
+        Index("ix_obra_local_ano", "ano"),
+    )
+
+    id: Mapped[BigIntPK]
+    municipio_ibge: Mapped[int] = mapped_column(ForeignKey("municipio.codigo_ibge"))
+    ano: Mapped[int]
+    obra_id_tce: Mapped[BigInt]
+    sequencia: Mapped[int]
+    id_bem: Mapped[BigInt | None]
+    descricao: Mapped[Texto | None]
+    logradouro: Mapped[Texto | None]
+    coordenada: Mapped[str | None]
+    latitude: Mapped[Decimal | None] = mapped_column(Numeric(9, 6))
+    longitude: Mapped[Decimal | None] = mapped_column(Numeric(9, 6))

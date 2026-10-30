@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.config import settings
 from app.db import engine, get_db
 from app.models import Base
-from app.routers import items
+from app.routers import items, quem_recebeu
 
 
 @asynccontextmanager
@@ -29,6 +29,7 @@ app.add_middleware(
 )
 
 app.include_router(items.router)
+app.include_router(quem_recebeu.router)
 
 
 @app.get("/health")

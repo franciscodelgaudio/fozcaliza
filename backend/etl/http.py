@@ -21,11 +21,13 @@ def cliente() -> httpx.Client:
     )
 
 
-def requisitar(http: httpx.Client, metodo: str, url: str, params: dict[str, Any] | None = None) -> httpx.Response:
+def requisitar(
+    http: httpx.Client, metodo: str, url: str, params: dict[str, Any] | None = None, data: dict[str, Any] | None = None
+) -> httpx.Response:
     """Requisição com retentativa em falhas transitórias."""
     for tentativa in range(1, TENTATIVAS + 1):
         try:
-            resposta = http.request(metodo, url, params=params)
+            resposta = http.request(metodo, url, params=params, data=data)
             resposta.raise_for_status()
             time.sleep(PAUSA_ENTRE_REQUISICOES)
             return resposta

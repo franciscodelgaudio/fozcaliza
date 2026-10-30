@@ -1,9 +1,9 @@
-"""Apaga do banco o que ficou fora da janela de gestões (etl/janela.py).
+"""Apaga do banco o que ficou fora das janelas de gestões (etl/janela.py).
 
 Linhas são escolhidas pelo período a que se referem: tabelas com periodo_id
-(pelo ano do período) e tabelas listadas em POR_EXERCICIO (pela coluna de
-ano). Depois saem coletas e períodos antigos que nada mais referencia.
-Todas as versões saem, não só a vigente.
+(pelo ano do período) e tabelas listadas em POR_EXERCICIO e DETALHE (pela
+coluna de ano), cada grupo com a sua janela. Depois saem coletas e períodos
+antigos que nada mais referencia. Todas as versões saem, não só a vigente.
 """
 
 import logging
@@ -16,10 +16,9 @@ from app.models import Base, Coleta, PeriodoReferencia
 log = logging.getLogger(__name__)
 
 # tabelas sem periodo_id, com a coluna que dá o exercício da linha
-POR_EXERCICIO = {
-    "siconfi_linha": "exercicio",
-    **{t: "ano" for t in ("empenho", "empenho_movimento", "contrato", "contrato_aditivo", "licitacao", "vinculo")},
-}
+POR_EXERCICIO = {"siconfi_linha": "exercicio", "obra": "ano", "obra_local": "ano"}
+# detalhe do TCE-PR: só a gestão atual
+DETALHE = {t: "ano" for t in ("empenho", "empenho_movimento", "contrato", "contrato_aditivo", "licitacao", "vinculo")}
 
 
 def _referencias(alvo: Table) -> list[tuple[Table, str]]:
@@ -37,7 +36,7 @@ def _nao_referenciado(alvo: Table):
     ])
 
 
-def podar(conn: Connection, primeiro_exercicio: int) -> dict[str, int]:
+def podar(conn: Connection, primeiro_exercicio: int, primeiro_exercicio_detalhe: int) -> dict[str, int]:
     periodo = PeriodoReferencia.__table__
     coleta = Coleta.__table__
     antigos = select(periodo.c.id).where(periodo.c.ano < primeiro_exercicio)
@@ -46,10 +45,13 @@ def podar(conn: Connection, primeiro_exercicio: int) -> dict[str, int]:
     for t, coluna in _referencias(periodo):
         if coluna == "periodo_id":
             apagadas[t.name] = conn.execute(delete(t).where(t.c.periodo_id.in_(antigos))).rowcount
-    for nome, coluna in POR_EXERCICIO.items():
-        t = Base.metadata.tables[nome]
-        apagadas[nome] = conn.execute(delete(t).where(t.c[coluna] < primeiro_exercicio)).rowcount
+    for tabelas, inicio in ((POR_EXERCICIO, primeiro_exercicio), (DETALHE, primeiro_exercicio_detalhe)):
+        for nome, coluna in tabelas.items():
+            t = Base.metadata.tables[nome]
+            apagadas[nome] = conn.execute(delete(t).where(t.c[coluna] < inicio)).rowcount
 
+    # coletas seguem a janela geral: dentro dela, a última coleta de cada
+    # requisição guarda o hash que evita baixar de novo o que não mudou
     apagadas["coleta"] = conn.execute(
         delete(coleta).where(
             coleta.c.periodo_coberto_fim < date(primeiro_exercicio, 1, 1), _nao_referenciado(coleta)
@@ -60,5 +62,8 @@ def podar(conn: Connection, primeiro_exercicio: int) -> dict[str, int]:
     ).rowcount
 
     apagadas = {k: v for k, v in apagadas.items() if v}
-    log.info("fora da janela (antes de %d): %s", primeiro_exercicio, apagadas or "nada a apagar")
+    log.info(
+        "fora das janelas (geral antes de %d, detalhe antes de %d): %s",
+        primeiro_exercicio, primeiro_exercicio_detalhe, apagadas or "nada a apagar",
+    )
     return apagadas

@@ -48,11 +48,23 @@ jobs:
           if [ "$FORCAR" = "true" ]; then args+=(--forcar); fi
           python -m etl siconfi "${args[@]}"
 
-      - name: Coletar TCE-PR (gestão atual)
+      - name: Coletar TCE-PR (detalhe da gestão atual e obras)
         if: success() || failure()
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: python -m etl tce
+
+      - name: Coletar painel do TCE-PR (apurações de anos fechados)
+        if: success() || failure()
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python -m etl tce-painel
+
+      - name: Coletar IBGE (população)
+        if: success() || failure()
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python -m etl ibge
 
       # rodam mesmo se alguma coleta falhou: tratam o que foi coletado
       - name: Podar (fora da janela de gestões)

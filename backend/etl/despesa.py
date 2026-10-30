@@ -39,6 +39,8 @@ ESTAGIOS_DCA = {
     "despesaspagas": "paga",
     "inscricaoderestosapagarnaoprocessados": "rp_np_inscrito",
     "inscricaoderestosapagarprocessados": "rp_p_inscrito",
+    "inscricaoderpnaoprocessados": "rp_np_inscrito",  # até 2016
+    "inscricaoderpprocessados": "rp_p_inscrito",
 }
 
 # (padrão no nome normalizado da coluna, estágio, acumulado no exercício)
@@ -144,7 +146,9 @@ def despesa_dca(ctx: Contexto) -> list[dict]:
             continue
         periodo_id = ctx.periodo(r.exercicio, "A", 1, False)
         if m := DCA_SUBFUNCAO.match(r.conta):
-            linhas.append(ctx.linha(r, "DCA-I-E", m[1], m[2], "subfuncao", intra, estagio, periodo_id))
+            # até 2016 "Demais Subfunções" vinha como "NN.999 - Demais Subfunções <função>"
+            subfuncao = None if m[2] == "999" else m[2]
+            linhas.append(ctx.linha(r, "DCA-I-E", m[1], subfuncao, "subfuncao", intra, estagio, periodo_id))
         elif m := DCA_FUNCAO.match(r.conta):
             linhas.append(ctx.linha(r, "DCA-I-E", m[1], None, "funcao", intra, estagio, periodo_id))
         elif (m := PREFIXO_FUNCAO.match(r.conta)) and normalizar(m[2]) == "demaissubfuncoes":

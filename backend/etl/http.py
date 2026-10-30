@@ -21,15 +21,14 @@ def cliente() -> httpx.Client:
     )
 
 
-def get_json(http: httpx.Client, url: str, params: dict[str, Any]) -> Any:
-    """GET com retentativa em falhas transitórias. Números decimais viram
-    Decimal (nunca float), para não introduzir erro de arredondamento."""
+def requisitar(http: httpx.Client, metodo: str, url: str, params: dict[str, Any] | None = None) -> httpx.Response:
+    """Requisição com retentativa em falhas transitórias."""
     for tentativa in range(1, TENTATIVAS + 1):
         try:
-            resposta = http.get(url, params=params)
+            resposta = http.request(metodo, url, params=params)
             resposta.raise_for_status()
             time.sleep(PAUSA_ENTRE_REQUISICOES)
-            return json.loads(resposta.content, parse_float=Decimal)
+            return resposta
         except (httpx.TransportError, httpx.HTTPStatusError) as erro:
             transitorio = (
                 isinstance(erro, httpx.TransportError)
@@ -41,3 +40,9 @@ def get_json(http: httpx.Client, url: str, params: dict[str, Any]) -> Any:
             log.warning("%s %s: %s; nova tentativa em %ss", url, params, erro, espera)
             time.sleep(espera)
     raise AssertionError("inalcançável")
+
+
+def get_json(http: httpx.Client, url: str, params: dict[str, Any]) -> Any:
+    """Números decimais viram Decimal (nunca float), para não introduzir erro
+    de arredondamento."""
+    return json.loads(requisitar(http, "GET", url, params).content, parse_float=Decimal)

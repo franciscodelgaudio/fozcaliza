@@ -10,11 +10,20 @@ from app.models.derivado import (
     IndicadorValor,
     NotaSerie,
 )
+from app.models.execucao import (
+    ContratoAditivo,
+    Contrato,
+    Empenho,
+    EmpenhoMovimento,
+    Licitacao,
+    Vinculo,
+)
 from app.models.item import Item
 from app.models.proveniencia import Coleta, EntregaDemonstrativo, Fonte
 from app.models.referencia import (
     ClassificacaoEquivalencia,
     ClassificacaoOficial,
+    Credor,
     Gestao,
     GrupoPares,
     GrupoParesMembro,
@@ -35,7 +44,12 @@ __all__ = [
     "ClassificacaoEquivalencia",
     "ClassificacaoOficial",
     "Coleta",
+    "Contrato",
+    "ContratoAditivo",
+    "Credor",
     "Despesa",
+    "Empenho",
+    "EmpenhoMovimento",
     "EntregaDemonstrativo",
     "ExecucaoColeta",
     "ExecucaoMetodologia",
@@ -50,6 +64,7 @@ __all__ = [
     "IndicePrecosSerie",
     "IndicePrecosValor",
     "Item",
+    "Licitacao",
     "Municipio",
     "MunicipioAtributo",
     "NotaSerie",
@@ -59,4 +74,5 @@ __all__ = [
     "ResultadoObservacao",
     "SiconfiLinha",
     "UnidadeGestora",
+    "Vinculo",
 ]

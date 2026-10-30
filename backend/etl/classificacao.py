@@ -6,6 +6,8 @@ consolidada pelo Ministério do Planejamento (atualizada até a Portaria SOF
 a Portaria SOF/MPO 169/2024 (subfunções 241, 242, 245 e 246 a partir de 2025,
 conforme Nota SIM-AM 009/2024 do TCE-PR). Inclusões e exclusões feitas por
 portarias posteriores valem a partir do exercício seguinte à sua publicação.
+A função 99 (Reserva de Contingência) não está na Portaria 42, que delega o
+código a cada esfera; o código 99 vem da Portaria Interministerial 163/2001.
 
 Subfunções não pertencem a uma função (podem ser combinadas com qualquer uma),
 por isso pai_id fica nulo; a função em que a portaria as lista vai em
@@ -65,21 +67,31 @@ class Classificacoes:
             select(c.id, c.codigo, c.descricao, c.vigencia_inicio, c.vigencia_fim).where(c.tipo == tipo)
         ).all()
 
-    def _vigentes(self, exercicio: int):
-        return [
-            r for r in self.linhas
+    def _candidatos(self, exercicio: int, filtro) -> list:
+        """Versões vigentes no exercício; se não houver, a mais recente de cada
+        código. Os relatórios às vezes ainda usam códigos já extintos (ex.: o
+        RREO 2015 lista a subfunção 603, excluída em 2012), e o publicado é o fato."""
+        achados = [r for r in self.linhas if filtro(r)]
+        vigentes = [
+            r for r in achados
             if r.vigencia_inicio <= exercicio and (r.vigencia_fim is None or exercicio <= r.vigencia_fim)
         ]
+        if vigentes:
+            return vigentes
+        recentes = {}
+        for r in sorted(achados, key=lambda r: r.vigencia_inicio):
+            recentes[r.codigo] = r
+        return list(recentes.values())
 
     def por_codigo(self, codigo: str, exercicio: int) -> int:
-        achados = [r.id for r in self._vigentes(exercicio) if r.codigo == codigo]
+        achados = self._candidatos(exercicio, lambda r: r.codigo == codigo)
         if len(achados) != 1:
             raise LookupError(f"{self.tipo} {codigo} em {exercicio}: {len(achados)} correspondências")
-        return achados[0]
+        return achados[0].id
 
     def codigo_por_nome(self, nome: str, exercicio: int) -> str:
         alvo = normalizar(nome)
-        achados = {r.codigo for r in self._vigentes(exercicio) if normalizar(r.descricao) == alvo}
+        achados = {r.codigo for r in self._candidatos(exercicio, lambda r: normalizar(r.descricao) == alvo)}
         if len(achados) != 1:
             raise LookupError(f"{self.tipo} '{nome}' em {exercicio}: {len(achados)} correspondências")
         return achados.pop()

@@ -23,6 +23,7 @@ cd backend
 python -m etl siconfi                  # incremental: só o que foi entregue/retificado
 python -m etl siconfi --desde 2024     # limita os exercícios
 python -m etl siconfi --forcar         # reverifica todos os relatórios
+python -m etl transformar              # classificação oficial + DESPESA (a partir dos brutos)
 ```
 
 - **Siconfi** (RREO, RGF, DCA e extrato de entregas de Foz do Iguaçu, desde 2013):

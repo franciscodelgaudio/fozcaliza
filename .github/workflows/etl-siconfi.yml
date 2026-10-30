@@ -1,4 +1,4 @@
-name: ETL Siconfi
+name: ETL dados públicos
 
 on:
   schedule:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       desde:
-        description: "Primeiro exercício (vazio = desde 2013)"
+        description: "Primeiro exercício (vazio = início da janela de 3 gestões)"
         required: false
       forcar:
         description: "Reverificar todos os relatórios"
@@ -48,7 +48,19 @@ jobs:
           if [ "$FORCAR" = "true" ]; then args+=(--forcar); fi
           python -m etl siconfi "${args[@]}"
 
-      # roda mesmo se alguma coleta falhou: transforma o que foi coletado
+      - name: Coletar TCE-PR (gestão atual)
+        if: success() || failure()
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python -m etl tce
+
+      # rodam mesmo se alguma coleta falhou: tratam o que foi coletado
+      - name: Podar (fora da janela de gestões)
+        if: success() || failure()
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python -m etl podar
+
       - name: Transformar
         if: success() || failure()
         env:

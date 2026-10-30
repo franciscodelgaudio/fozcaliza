@@ -12,6 +12,7 @@ funcao,04,Administração,Portaria MOG 42/1999 (consolidada até Portaria SOF 67
 subfuncao,121,Planejamento e Orçamento,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
 subfuncao,122,Administração Geral,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
 subfuncao,123,Administração Financeira,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
+subfuncao,124,Controle Interno,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
 subfuncao,125,Normatização e Fiscalização,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
 subfuncao,126,Tecnologia da Informação,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
 subfuncao,127,Ordenamento Territorial,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
@@ -58,6 +59,7 @@ subfuncao,362,Ensino Médio,Portaria MOG 42/1999 (consolidada até Portaria SOF 
 subfuncao,363,Ensino Profissional,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,12
 subfuncao,364,Ensino Superior,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,12
 subfuncao,365,Educação Infantil,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,12
+subfuncao,366,Educação de Jovens e Adultos,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,12
 subfuncao,367,Educação Especial,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,12
 subfuncao,368,Educação Básica,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2012,,12
 funcao,13,Cultura,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
@@ -89,6 +91,7 @@ subfuncao,572,Desenvolvimento Tecnológico e Engenharia,Portaria MOG 42/1999 (co
 subfuncao,573,Difusão do Conhecimento Científico e Tecnológico,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,19
 funcao,20,Agricultura,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
 subfuncao,601,Promoção da Produção Vegetal,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,2012,20
+subfuncao,602,Promoção da Produção Animal,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,2012,20
 subfuncao,603,Defesa Sanitária Vegetal,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,2012,20
 subfuncao,604,Defesa Sanitária Animal,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,2012,20
 subfuncao,605,Abastecimento,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,20
@@ -141,3 +144,4 @@ subfuncao,241,Assistência à Pessoa Idosa,Portaria SOF/MPO 169/2024,2025,,08
 subfuncao,242,Assistência à Pessoa com Deficiência,Portaria SOF/MPO 169/2024,2025,,08
 subfuncao,245,Serviços Socioassistenciais,Portaria SOF/MPO 169/2024,2025,,08
 subfuncao,246,Segurança de Renda,Portaria SOF/MPO 169/2024,2025,,08
+funcao,99,Reserva de Contingência,Portaria Interministerial STN/SOF 163/2001 (art. 8º),2002,,

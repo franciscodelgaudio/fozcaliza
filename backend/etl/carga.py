@@ -69,14 +69,17 @@ def registrar_se_mudou(
     fonte_id: int,
     endpoint: str,
     parametros: dict,
-    itens: list[dict],
+    itens: list[dict] | str,
     periodo_coberto: tuple[date, date],
+    arquivo_original_uri: str | None = None,
+    sempre: bool = False,
 ) -> int | None:
     """Grava a coleta e devolve seu id, ou None se o conteúdo tem o mesmo hash
-    da última coleta bem-sucedida (nada a fazer)."""
-    hash_atual = hash_conteudo(itens)
+    da última coleta bem-sucedida (nada a fazer). `itens` pode ser o hash já
+    calculado (arquivos grandes, lidos em fluxo)."""
+    hash_atual = itens if isinstance(itens, str) else hash_conteudo(itens)
     anterior = ultima_coleta(conn, fonte_id, endpoint, parametros)
-    if anterior is not None and anterior.hash_conteudo == hash_atual:
+    if anterior is not None and anterior.hash_conteudo == hash_atual and not sempre:
         return None
     return conn.execute(
         insert(Coleta).returning(Coleta.id),
@@ -84,6 +87,7 @@ def registrar_se_mudou(
             fonte_id=fonte_id,
             endpoint=endpoint,
             parametros_requisicao=parametros,
+            arquivo_original_uri=arquivo_original_uri,
             hash_conteudo=hash_atual,
             periodo_coberto_inicio=periodo_coberto[0],
             periodo_coberto_fim=periodo_coberto[1],
@@ -174,6 +178,14 @@ def carregar_versionado(
     diferente = or_(*[t.c[v].is_distinct_from(tmp.c[v]) for v in valores])
     no_escopo = [t.c[k].is_(None) if v is None else t.c[k] == v for k, v in escopo.items()]
 
+    # uma chave que já existe vigente fora do escopo seria encerrada (ou a linha
+    # nova descartada) em nome de outra carga: a chave está incompleta
+    colisoes = conn.execute(
+        select(func.count()).select_from(t.join(tmp, mesma_chave)).where(vigente, ~and_(*no_escopo))
+    ).scalar()
+    if colisoes:
+        raise ValueError(f"{t.name}: {colisoes} chaves colidem com linhas vigentes fora do escopo {escopo}")
+
     alteradas = conn.execute(
         update(t).where(vigente, mesma_chave, diferente).values(valido_ate=func.now())
     ).rowcount
@@ -199,4 +211,5 @@ def carregar_versionado(
         .on_conflict_do_nothing(index_elements=chaves, index_where=vigente)
         .returning(t.c.id)
     ).all())
+    tmp.drop(conn)  # permite outra carga da mesma tabela na mesma transação
     return ResumoCarga(inseridas, alteradas, removidas)

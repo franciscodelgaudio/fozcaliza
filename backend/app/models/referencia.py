@@ -136,6 +136,24 @@ class UnidadeGestora(Base):
     poder: Mapped[str | None]
     tipo: Mapped[str]
     cnpj: Mapped[str | None]
+    codigo_tce: Mapped[int | None] = mapped_column(unique=True)  # idPessoa no SIM-AM (TCE-PR)
+
+
+class Credor(Base):
+    """Quem recebe recursos (empenhos, contratos). Documento como publicado pelo
+    TCE-PR; CPF de pessoa física fica sempre mascarado (***.123.***-**).
+    Mudança de nome (razão social) gera outro credor com o mesmo documento."""
+
+    __tablename__ = "credor"
+    __table_args__ = (
+        UniqueConstraint("tipo_documento", "documento", "nome"),
+        check_in("tipo_documento", "CNPJ", "CPF", "outro"),
+    )
+
+    id: Mapped[IntPK]
+    tipo_documento: Mapped[str]
+    documento: Mapped[str]
+    nome: Mapped[str]
 
 
 class Gestao(Base):

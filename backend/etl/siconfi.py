@@ -48,7 +48,6 @@ log = logging.getLogger(__name__)
 
 BASE_URL = "https://apidatalake.tesouro.gov.br/ords/siconfi/tt"
 DOC_URL = "https://apidatalake.tesouro.gov.br/docs/siconfi/"
-PRIMEIRO_EXERCICIO = 2013  # DCA desde 2013; RREO e RGF desde 2015
 JANELA_REVERIFICACAO = timedelta(days=7)
 
 FOZ_DO_IGUACU = dict(codigo_ibge=4108304, codigo_ibge6=410830, nome="Foz do Iguaçu", uf="PR")

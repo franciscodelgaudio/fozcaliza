@@ -5,9 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from app import models  # noqa: F401  (registra os models no metadata)
 from app.config import settings
-from app.db import Base, engine, get_db
+from app.db import engine, get_db
+from app.models import Base
 from app.routers import items
 
 

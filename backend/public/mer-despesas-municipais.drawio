@@ -1,0 +1,359 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="MER" id="mer-despesas-municipais">
+<mxGraphModel dx="3603" dy="2038" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1240" pageHeight="800" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+    <mxCell id="fonte" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;swimlaneFillColor=default;" value="FONTE" vertex="1">
+      <mxGeometry height="130" width="330" as="geometry" />
+    </mxCell>
+    <mxCell id="fonte_b" parent="fonte" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : int&#xa;orgao : varchar (STN, MS, FNDE, IBGE, TCE-PR)&#xa;sistema : varchar (Siconfi, SIOPS, SIOPE, SIDRA)&#xa;dataset : varchar (RREO, RGF, DCA, MSC, Estimativas)&#xa;url_documentacao : varchar" vertex="1">
+      <mxGeometry height="104" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="coleta" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;swimlaneFillColor=default;" value="COLETA" vertex="1">
+      <mxGeometry height="230" width="330" y="170" as="geometry" />
+    </mxCell>
+    <mxCell id="coleta_b" parent="coleta" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : bigint&#xa;FK fonte_id : int&#xa;endpoint : varchar&#xa;parametros_requisicao : jsonb&#xa;arquivo_original_uri : varchar&#xa;hash_conteudo : varchar&#xa;periodo_coberto_inicio : date&#xa;periodo_coberto_fim : date&#xa;versao_ingestao : varchar (git sha do ETL)&#xa;executada_em : timestamptz&#xa;status : varchar (sucesso | parcial | falha)" vertex="1">
+      <mxGeometry height="204" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="entrega" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;swimlaneFillColor=default;" value="ENTREGA_DEMONSTRATIVO" vertex="1">
+      <mxGeometry height="260" width="330" y="440" as="geometry" />
+    </mxCell>
+    <mxCell id="entrega_b" parent="entrega" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : bigint&#xa;FK municipio_ibge : int&#xa;FK periodo_id : int&#xa;FK fonte_id : int&#xa;demonstrativo : varchar (RREO | RGF | DCA | MSC | SIOPS | SIOPE)&#xa;status : varchar (entregue | homologado | retificado | nao_entregue)&#xa;data_entrega : date (nullable)&#xa;data_homologacao : date (nullable)&#xa;FK coleta_id : bigint&#xa;UNIQUE (municipio_ibge, periodo_id, fonte_id, demonstrativo)" vertex="1">
+      <mxGeometry height="234" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="despesa" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=default;" value="DESPESA" vertex="1">
+      <mxGeometry height="385" width="330" x="380" as="geometry" />
+    </mxCell>
+    <mxCell id="despesa_b" parent="despesa" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : bigint&#xa;FK municipio_ibge : int&#xa;FK unidade_gestora_id : int&#xa;FK periodo_id : int&#xa;FK fonte_id : int&#xa;demonstrativo : varchar (RREO-A2 | DCA-I-E | MSC | TCE)&#xa;nivel_detalhe : varchar (funcao | subfuncao | elemento)&#xa;FK funcao_id : int&#xa;FK subfuncao_id : int (nullable)&#xa;FK natureza_despesa_id : int (nullable, até o nível disponível)&#xa;FK fonte_recurso_id : int (nullable)&#xa;programa_codigo : varchar (nullable, código local)&#xa;acao_codigo : varchar (nullable, código local)&#xa;intraorcamentaria : boolean (modalidade 91)&#xa;estagio : varchar (dotacao_inicial ... rp_cancelado)&#xa;valor : numeric(15,2) — nominal, como publicado&#xa;FK coleta_id : bigint&#xa;valido_de : timestamptz&#xa;valido_ate : timestamptz (nulo = atual)" vertex="1">
+      <mxGeometry height="359" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="receita" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=default;" value="RECEITA" vertex="1">
+      <mxGeometry height="350" width="330" x="380" y="425" as="geometry" />
+    </mxCell>
+    <mxCell id="receita_b" parent="receita" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : bigint&#xa;FK municipio_ibge : int&#xa;FK unidade_gestora_id : int&#xa;FK periodo_id : int&#xa;FK fonte_id : int&#xa;demonstrativo : varchar&#xa;nivel_detalhe : varchar&#xa;FK natureza_receita_id : int (código completo)&#xa;FK fonte_recurso_id : int (nullable)&#xa;intraorcamentaria : boolean&#xa;base : varchar (bruta | deducao)&#xa;tipo_deducao : varchar (nullable: FUNDEB, restituição)&#xa;estagio : varchar (prevista | atualizada | arrecadada)&#xa;valor : numeric(15,2) — nominal, como publicado&#xa;FK coleta_id : bigint&#xa;valido_de : timestamptz&#xa;valido_ate : timestamptz (nulo = atual)" vertex="1">
+      <mxGeometry height="324" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="apuracao" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=default;" value="APURACAO_OFICIAL (RGF, RREO, SIOPS, SIOPE)" vertex="1">
+      <mxGeometry height="315" width="330" x="380" y="815" as="geometry" />
+    </mxCell>
+    <mxCell id="apuracao_b" parent="apuracao" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : bigint&#xa;FK municipio_ibge : int&#xa;FK periodo_id : int&#xa;FK fonte_id : int&#xa;poder : varchar (executivo | legislativo | consolidado)&#xa;item : varchar (RCL | DTP | DCL | MDE | ASPS | FUNDEB_70)&#xa;numerador : numeric(15,2)&#xa;denominador : numeric(15,2) (nullable)&#xa;percentual_apurado : numeric(7,4) (nullable)&#xa;limite_ou_minimo : numeric(7,4) (nullable)&#xa;base_legal : varchar (CF art. 212, LC 141, LRF art. 20)&#xa;metodologia_apuracao : varchar&#xa;FK coleta_id : bigint&#xa;valido_de : timestamptz&#xa;valido_ate : timestamptz (nulo = atual)" vertex="1">
+      <mxGeometry height="289" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="resultado" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=default;" value="RESULTADO_OBSERVACAO" vertex="1">
+      <mxGeometry height="245" width="330" x="380" y="1170" as="geometry" />
+    </mxCell>
+    <mxCell id="resultado_b" parent="resultado" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : bigint&#xa;FK municipio_ibge : int&#xa;FK periodo_id : int&#xa;FK fonte_id : int&#xa;variavel : varchar (ideb_anos_iniciais, mortalidade_infantil)&#xa;recorte : varchar (rede municipal, total)&#xa;valor : numeric&#xa;unidade : varchar&#xa;FK coleta_id : bigint&#xa;valido_de : timestamptz&#xa;valido_ate : timestamptz (nulo = atual)" vertex="1">
+      <mxGeometry height="219" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="classif" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=default;" value="CLASSIFICACAO_OFICIAL" vertex="1">
+      <mxGeometry height="300" width="330" x="760" as="geometry" />
+    </mxCell>
+    <mxCell id="classif_b" parent="classif" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : int&#xa;tipo : varchar (funcao | subfuncao | natureza_despesa | natureza_receita | fonte_recurso)&#xa;codigo : varchar&#xa;descricao : varchar&#xa;nivel : varchar (categoria | grupo | modalidade | elemento...)&#xa;FK pai_id : int (nullable, hierarquia)&#xa;versao : varchar (ex.: Portaria STN/SOF, MCASP 11ª ed.)&#xa;vigencia_inicio : int (exercício)&#xa;vigencia_fim : int (nullable)&#xa;atributos : jsonb (origem, vinculada, agrupamento)&#xa;UNIQUE (tipo, codigo, versao)&#xa;UNIQUE (id, tipo) — alvo de FK composta" vertex="1">
+      <mxGeometry height="274" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="equiv" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=default;" value="CLASSIFICACAO_EQUIVALENCIA" vertex="1">
+      <mxGeometry height="195" width="330" x="760" y="340" as="geometry" />
+    </mxCell>
+    <mxCell id="equiv_b" parent="equiv" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : int&#xa;FK origem_id : int&#xa;FK destino_id : int&#xa;cardinalidade : varchar (1:1 | 1:N | N:1 | N:M)&#xa;tipo_relacao : varchar (identica | renomeada | desmembrada | fundida | parcial)&#xa;regra_harmonizacao : text&#xa;fator_rateio : numeric(7,6) (nullable)&#xa;fundamento : text (portaria / MCASP)" vertex="1">
+      <mxGeometry height="169" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="periodo" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=default;" value="PERIODO_REFERENCIA" vertex="1">
+      <mxGeometry height="230" width="330" x="760" y="575" as="geometry" />
+    </mxCell>
+    <mxCell id="periodo_b" parent="periodo" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : int&#xa;ano : int&#xa;tipo_periodo : varchar (anual | bimestral | mensal | pontual)&#xa;sequencia : int (bimestre/mês; nulo se anual)&#xa;data_inicio : date&#xa;data_fim : date&#xa;data_referencia : date (ex.: 1/jul para estimativa)&#xa;acumulado_no_exercicio : boolean&#xa;UNIQUE (tipo_periodo, data_inicio, data_fim, data_referencia)" vertex="1">
+      <mxGeometry height="204" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="ips" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=default;" value="INDICE_PRECOS_SERIE" vertex="1">
+      <mxGeometry height="110" width="330" x="760" y="845" as="geometry" />
+    </mxCell>
+    <mxCell id="ips_b" parent="ips" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK codigo : varchar (IPCA)&#xa;nome : varchar&#xa;orgao : varchar (IBGE)&#xa;abrangencia : varchar (nacional | regiao metropolitana)" vertex="1">
+      <mxGeometry height="84" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="ipv" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=default;" value="INDICE_PRECOS_VALOR" vertex="1">
+      <mxGeometry height="160" width="330" x="760" y="995" as="geometry" />
+    </mxCell>
+    <mxCell id="ipv_b" parent="ipv" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : bigint&#xa;FK serie_codigo : varchar&#xa;FK periodo_id : int&#xa;numero_indice : numeric(14,6)&#xa;FK coleta_id : bigint&#xa;valido_de : timestamptz&#xa;valido_ate : timestamptz (nulo = atual)" vertex="1">
+      <mxGeometry height="134" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="municipio" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=default;" value="MUNICIPIO" vertex="1">
+      <mxGeometry height="130" width="330" x="1140" as="geometry" />
+    </mxCell>
+    <mxCell id="municipio_b" parent="municipio" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK codigo_ibge : int (7 dígitos)&#xa;codigo_ibge6 : int (SIOPS / SIOPE)&#xa;nome : varchar&#xa;uf : char(2)&#xa;data_instalacao : date (nullable)" vertex="1">
+      <mxGeometry height="104" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="ug" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=default;" value="UNIDADE_GESTORA" vertex="1">
+      <mxGeometry height="180" width="330" x="1140" y="170" as="geometry" />
+    </mxCell>
+    <mxCell id="ug_b" parent="ug" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : int&#xa;FK municipio_ibge : int&#xa;nome : varchar&#xa;poder : varchar (executivo | legislativo)&#xa;tipo : varchar (consolidado | adm_direta | autarquia | fundacao | fundo | rpps | empresa_dependente)&#xa;cnpj : varchar (nullable)" vertex="1">
+      <mxGeometry height="154" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="gestao" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=default;" value="GESTAO" vertex="1">
+      <mxGeometry height="195" width="330" x="1140" y="390" as="geometry" />
+    </mxCell>
+    <mxCell id="gestao_b" parent="gestao" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : int&#xa;FK municipio_ibge : int&#xa;titular_nome : varchar&#xa;cargo : varchar (prefeito | vice_em_exercicio | interino)&#xa;inicio : date&#xa;fim : date (nullable)&#xa;motivo_fim : varchar (fim_mandato | cassacao | renuncia | obito)&#xa;FK coleta_id : bigint (TSE / ato oficial)" vertex="1">
+      <mxGeometry height="169" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="pop" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=default;" value="POPULACAO_OBSERVACAO" vertex="1">
+      <mxGeometry height="195" width="330" x="1140" y="625" as="geometry" />
+    </mxCell>
+    <mxCell id="pop_b" parent="pop" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : bigint&#xa;FK municipio_ibge : int&#xa;quantidade : int&#xa;tipo : varchar (censo | estimativa | projecao)&#xa;FK periodo_id : int (data_referencia)&#xa;metodologia_versao : varchar&#xa;FK coleta_id : bigint&#xa;valido_de : timestamptz&#xa;valido_ate : timestamptz (nulo = atual)" vertex="1">
+      <mxGeometry height="169" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="matr" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=default;" value="MUNICIPIO_ATRIBUTO" vertex="1">
+      <mxGeometry height="195" width="330" x="1140" y="860" as="geometry" />
+    </mxCell>
+    <mxCell id="matr_b" parent="matr" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : bigint&#xa;FK municipio_ibge : int&#xa;FK periodo_id : int&#xa;atributo : varchar (porte, regiao, dependencia_transf, pib_pc)&#xa;valor_num : numeric (nullable)&#xa;valor_txt : varchar (nullable)&#xa;FK coleta_id : bigint (nullable se derivado)&#xa;FK execucao_id : bigint (nullable se bruto)" vertex="1">
+      <mxGeometry height="169" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="gp" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=default;" value="GRUPO_PARES" vertex="1">
+      <mxGeometry height="95" width="330" x="1520" as="geometry" />
+    </mxCell>
+    <mxCell id="gp_b" parent="gp" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : int&#xa;nome : varchar&#xa;descricao : text" vertex="1">
+      <mxGeometry height="69" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="gpv" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=default;" value="GRUPO_PARES_VERSAO" vertex="1">
+      <mxGeometry height="195" width="330" x="1520" y="135" as="geometry" />
+    </mxCell>
+    <mxCell id="gpv_b" parent="gpv" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : int&#xa;FK grupo_id : int&#xa;versao : int&#xa;data_referencia_classificacao : date&#xa;modo_composicao : varchar (fixo | por_ano | atual)&#xa;criterios : jsonb (atributo, operador, valor)&#xa;justificativa : text&#xa;vigencia_inicio : int&#xa;vigencia_fim : int (nullable)" vertex="1">
+      <mxGeometry height="169" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="gpm" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=default;" value="GRUPO_PARES_MEMBRO" vertex="1">
+      <mxGeometry height="145" width="330" x="1520" y="370" as="geometry" />
+    </mxCell>
+    <mxCell id="gpm_b" parent="gpm" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK, FK versao_id : int&#xa;PK, FK municipio_ibge : int&#xa;PK, FK periodo_id : int (ano em que atendeu ao critério)&#xa;valores_criterio : jsonb (snapshot)&#xa;justificativa_inclusao : text (nullable)" vertex="1">
+      <mxGeometry height="119" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="ind" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;swimlaneFillColor=default;" value="INDICADOR" vertex="1">
+      <mxGeometry height="125" width="330" x="1520" y="555" as="geometry" />
+    </mxCell>
+    <mxCell id="ind_b" parent="ind" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK codigo : varchar&#xa;nome : varchar&#xa;tipo : varchar (gasto | receita | fiscal | resultado | contexto)&#xa;descricao_publica : text" vertex="1">
+      <mxGeometry height="99" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="met" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;swimlaneFillColor=default;" value="INDICADOR_METODOLOGIA" vertex="1">
+      <mxGeometry height="450" width="330" x="1520" y="720" as="geometry" />
+    </mxCell>
+    <mxCell id="met_b" parent="met" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK, FK indicador_codigo : varchar&#xa;PK versao : int&#xa;numerador_descricao : text&#xa;denominador_descricao : text&#xa;formula : text&#xa;agregacao : varchar (soma | razao | percentual | variacao)&#xa;unidade_medida : varchar (R$ | R$/hab | %)&#xa;escopo : varchar (municipal ...)&#xa;estagio : varchar (empenhada | liquidada | paga)&#xa;demonstrativo_canonico : varchar&#xa;filtros : jsonb (poder, excluir intra, unidade, níveis)&#xa;base_populacional : varchar (estimativa | censo)&#xa;FK deflator_serie : varchar (nullable)&#xa;deflator_regra : varchar (media_ano | dezembro)&#xa;ano_base_deflacao : int (nullable)&#xa;direcao_interpretacao : varchar (maior_melhor | menor_melhor | neutro)&#xa;regra_valores_ausentes : text&#xa;criterio_comparabilidade : text&#xa;exige_exercicio_completo : boolean&#xa;regra_atribuicao_gestao : text&#xa;limitacoes : text&#xa;vigencia_inicio : date&#xa;vigencia_fim : date (nullable)" vertex="1">
+      <mxGeometry height="424" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="exec" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;swimlaneFillColor=default;" value="EXECUCAO_METODOLOGIA" vertex="1">
+      <mxGeometry height="180" width="330" x="1900" as="geometry" />
+    </mxCell>
+    <mxCell id="exec_b" parent="exec" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : bigint&#xa;FK indicador_codigo, metodologia_versao&#xa;executado_em : timestamptz&#xa;data_corte : timestamptz (as-of dos dados brutos)&#xa;parametros : jsonb&#xa;versao_codigo : varchar (git sha)&#xa;status : varchar (sucesso | parcial | falha)&#xa;log_resumo : text" vertex="1">
+      <mxGeometry height="154" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="execcol" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;swimlaneFillColor=default;" value="EXECUCAO_COLETA" vertex="1">
+      <mxGeometry height="75" width="330" x="1900" y="220" as="geometry" />
+    </mxCell>
+    <mxCell id="execcol_b" parent="execcol" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK, FK execucao_id : bigint&#xa;PK, FK coleta_id : bigint" vertex="1">
+      <mxGeometry height="49" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="iv" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;swimlaneFillColor=default;" value="INDICADOR_VALOR" vertex="1">
+      <mxGeometry height="350" width="330" x="1900" y="335" as="geometry" />
+    </mxCell>
+    <mxCell id="iv_b" parent="iv" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : bigint&#xa;FK execucao_id : bigint&#xa;FK indicador_codigo, metodologia_versao&#xa;FK municipio_ibge : int (nullable em agregado de grupo)&#xa;FK grupo_pares_versao_id : int (nullable)&#xa;FK periodo_id : int&#xa;FK gestao_id : int (nullable, conforme regra de atribuição)&#xa;numerador : numeric&#xa;denominador : numeric (nullable)&#xa;valor : numeric&#xa;status_qualidade : varchar (completo | parcial | ausente | estimado)&#xa;cobertura : numeric(5,4) (fração de dados presentes)&#xa;publicado : boolean&#xa;UNIQUE (execucao_id, indicador_codigo, municipio_ibge, grupo_pares_versao_id, periodo_id)" vertex="1">
+      <mxGeometry height="324" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="nota" parent="1" style="swimlane;fontStyle=1;startSize=26;html=1;collapsible=0;fillColor=#e1d5e7;strokeColor=#9673a6;swimlaneFillColor=default;" value="NOTA_SERIE (quebras e ressalvas)" vertex="1">
+      <mxGeometry height="230" width="330" x="1900" y="725" as="geometry" />
+    </mxCell>
+    <mxCell id="nota_b" parent="nota" style="text;html=1;whiteSpace=wrap;align=left;verticalAlign=top;spacingLeft=6;spacingTop=2;fontSize=11;strokeColor=none;fillColor=none;" value="PK id : bigint&#xa;FK municipio_ibge : int (nullable = todos)&#xa;FK indicador_codigo : varchar (nullable)&#xa;metodologia_versao : int (nullable)&#xa;FK classificacao_id : int (nullable)&#xa;FK periodo_inicio_id : int&#xa;FK periodo_fim_id : int (nullable)&#xa;tipo : varchar (quebra | ressalva | contexto | correcao)&#xa;gravidade : varchar (informativa | impede_comparacao)&#xa;descricao : text&#xa;fundamento_url : varchar" vertex="1">
+      <mxGeometry height="204" width="330" y="26" as="geometry" />
+    </mxCell>
+    <mxCell id="regras" parent="1" style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;size=14;" value="REGRAS DE CARGA E CONSULTA&#xa;&#xa;• Dados brutos sempre nominais e versionados: se o valor mudou, encerra a versão (valido_ate = now()) e insere nova. Nada é sobrescrito.&#xa;• Consulta as-of: valido_de ≤ data_corte e (valido_ate nulo ou valido_ate maior que data_corte).&#xa;• Unicidade DESPESA (PG15+): UNIQUE NULLS NOT DISTINCT (municipio_ibge, unidade_gestora_id, periodo_id, fonte_id, demonstrativo, nivel_detalhe, funcao_id, subfuncao_id, natureza_despesa_id, fonte_recurso_id, programa_codigo, acao_codigo, estagio) WHERE valido_ate IS NULL. RECEITA análogo.&#xa;• Nunca somar entre níveis de detalhe, entre demonstrativos, nem com a unidade &#39;consolidado&#39;.&#xa;• Indicadores excluem intraorçamentárias (despesa e receita) por padrão.&#xa;• Ausência ≠ zero: sem entrega em ENTREGA_DEMONSTRATIVO, o valor é &#39;ausente&#39;.&#xa;• Período parcial só se compara com o mesmo período acumulado de outro ano.&#xa;• FKs para CLASSIFICACAO_OFICIAL: FK composta (id, tipo) ou trigger que garanta o tipo correto.&#xa;• NOTA_SERIE com gravidade = impede_comparacao bloqueia a comparação no frontend.&#xa;• Atribuição à GESTAO segue regra_atribuicao_gestao (ex.: 1º ano executa a LOA do antecessor; RP herdados).&#xa;• RCL, DTP e mínimos constitucionais vêm de APURACAO_OFICIAL; não recalcular a partir de DESPESA." vertex="1">
+      <mxGeometry height="560" width="330" y="740" as="geometry" />
+    </mxCell>
+    <mxCell id="legenda" parent="1" style="shape=note;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;spacingRight=8;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;size=14;" value="LEGENDA&#xa;Verde: referência (códigos oficiais, cadastros, tempo)&#xa;Azul: dado bruto, fiel à fonte&#xa;Cinza: proveniência e cobertura&#xa;Lilás: camada derivada&#xa;&#xa;FKs onipresentes (municipio_ibge, periodo_id, coleta_id, fonte_id) estão nos atributos, mas sem linhas, para não poluir o diagrama." vertex="1">
+      <mxGeometry height="200" width="330" x="1900" y="995" as="geometry" />
+    </mxCell>
+    <mxCell id="e1" edge="1" parent="1" source="fonte" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="coleta">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e2" edge="1" parent="1" source="coleta" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="execcol">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e3" edge="1" parent="1" source="exec" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERoneToMany;startFill=0;endFill=0;" target="execcol">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e4" edge="1" parent="1" source="municipio" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERoneToMany;startFill=0;endFill=0;" target="ug">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e5" edge="1" parent="1" source="municipio" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="gestao">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e6" edge="1" parent="1" source="municipio" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="pop">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e7" edge="1" parent="1" source="municipio" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="matr">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e8" edge="1" parent="1" source="municipio" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="gpm">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e9" edge="1" parent="1" source="gp" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERoneToMany;startFill=0;endFill=0;" target="gpv">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e10" edge="1" parent="1" source="gpv" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="gpm">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e11" edge="1" parent="1" source="ug" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="despesa">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e12" edge="1" parent="1" source="ug" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="receita">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e13" edge="1" parent="1" source="classif" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=9;" target="despesa" value="funcao, subfuncao, natureza, fonte_recurso">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e14" edge="1" parent="1" source="classif" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=9;" target="receita" value="natureza, fonte_recurso">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e15" edge="1" parent="1" source="classif" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=9;" target="equiv" value="origem">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e16" edge="1" parent="1" source="classif" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=9;" target="equiv" value="destino">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e17" edge="1" parent="1" source="ips" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="ipv">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e18" edge="1" parent="1" source="ips" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=9;" target="met" value="deflator">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e19" edge="1" parent="1" source="ind" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERoneToMany;startFill=0;endFill=0;" target="met">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e20" edge="1" parent="1" source="met" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="exec">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e21" edge="1" parent="1" source="exec" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="iv">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e22" edge="1" parent="1" source="met" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="iv">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e23" edge="1" parent="1" source="gpv" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="iv">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e24" edge="1" parent="1" source="gestao" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=9;" target="iv" value="atribuição">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e25" edge="1" parent="1" source="ind" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="nota">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e26" edge="1" parent="1" source="classif" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;" target="nota">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e27" edge="1" parent="1" source="exec" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=9;" target="matr" value="atributo derivado">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="r1" edge="1" parent="1" source="classif" style="html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=9;" target="classif" value="pai_id">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="r2" edge="1" parent="1" source="met" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;fontSize=9;" target="nota" value="metodologia_versao">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="ctx" parent="0" value="FKs de contexto (município, período, coleta, fonte)" />
+    <mxCell id="m1" edge="1" parent="ctx" source="municipio" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#82b366;" target="entrega">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="m2" edge="1" parent="ctx" source="municipio" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#82b366;" target="despesa">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="m3" edge="1" parent="ctx" source="municipio" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#82b366;" target="receita">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="m4" edge="1" parent="ctx" source="municipio" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#82b366;" target="apuracao">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="m5" edge="1" parent="ctx" source="municipio" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#82b366;" target="resultado">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="m6" edge="1" parent="ctx" source="municipio" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#82b366;" target="iv">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="m7" edge="1" parent="ctx" source="municipio" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#82b366;" target="nota">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="p1" edge="1" parent="ctx" source="periodo" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#d79b00;" target="entrega">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="p2" edge="1" parent="ctx" source="periodo" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#d79b00;" target="despesa">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="p3" edge="1" parent="ctx" source="periodo" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#d79b00;" target="receita">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="p4" edge="1" parent="ctx" source="periodo" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#d79b00;" target="apuracao">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="p5" edge="1" parent="ctx" source="periodo" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#d79b00;" target="resultado">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="p6" edge="1" parent="ctx" source="periodo" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#d79b00;" target="ipv">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="p7" edge="1" parent="ctx" source="periodo" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#d79b00;" target="pop">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="p8" edge="1" parent="ctx" source="periodo" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#d79b00;" target="matr">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="p9" edge="1" parent="ctx" source="periodo" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#d79b00;" target="gpm">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="p10" edge="1" parent="ctx" source="periodo" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#d79b00;" target="iv">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="p11" edge="1" parent="ctx" source="periodo" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#d79b00;fontSize=9;" target="nota" value="inicio">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="p12" edge="1" parent="ctx" source="periodo" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#d79b00;fontSize=9;" target="nota" value="fim">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="k1" edge="1" parent="ctx" source="coleta" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#999999;" target="entrega">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="k2" edge="1" parent="ctx" source="coleta" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#999999;" target="despesa">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="k3" edge="1" parent="ctx" source="coleta" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#999999;" target="receita">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="k4" edge="1" parent="ctx" source="coleta" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#999999;" target="apuracao">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="k5" edge="1" parent="ctx" source="coleta" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#999999;" target="resultado">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="k6" edge="1" parent="ctx" source="coleta" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#999999;" target="ipv">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="k7" edge="1" parent="ctx" source="coleta" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#999999;" target="pop">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="k8" edge="1" parent="ctx" source="coleta" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#999999;" target="gestao">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="k9" edge="1" parent="ctx" source="coleta" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERzeroToOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#999999;" target="matr">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="f1" edge="1" parent="ctx" source="fonte" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#6c8ebf;" target="entrega">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="f2" edge="1" parent="ctx" source="fonte" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#6c8ebf;" target="despesa">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="f3" edge="1" parent="ctx" source="fonte" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#6c8ebf;" target="receita">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="f4" edge="1" parent="ctx" source="fonte" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#6c8ebf;" target="apuracao">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="f5" edge="1" parent="ctx" source="fonte" style="edgeStyle=entityRelationEdgeStyle;html=1;startArrow=ERmandOne;endArrow=ERzeroToMany;startFill=0;endFill=0;strokeColor=#6c8ebf;" target="resultado">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+  </root>
+</mxGraphModel>
+  </diagram>
+</mxfile>

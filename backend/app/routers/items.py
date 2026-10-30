@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.models import Item
+from app.models.item import Item
 from app.schemas import ItemCreate, ItemRead
 
 router = APIRouter(prefix="/items", tags=["items"])

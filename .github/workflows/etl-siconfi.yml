@@ -47,3 +47,10 @@ jobs:
           if [ -n "$DESDE" ]; then args+=(--desde "$DESDE"); fi
           if [ "$FORCAR" = "true" ]; then args+=(--forcar); fi
           python -m etl siconfi "${args[@]}"
+
+      # roda mesmo se alguma coleta falhou: transforma o que foi coletado
+      - name: Transformar
+        if: success() || failure()
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python -m etl transformar

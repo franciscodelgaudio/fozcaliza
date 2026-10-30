@@ -122,6 +122,8 @@ class UnidadeGestora(Base):
     __table_args__ = (
         UniqueConstraint("municipio_ibge", "nome"),
         check_in("poder", "executivo", "legislativo"),
+        # o consolidado (RREO, DCA) reúne os dois poderes
+        CheckConstraint("(tipo = 'consolidado') = (poder IS NULL)", name="poder_exceto_consolidado"),
         check_in(
             "tipo",
             "consolidado", "adm_direta", "autarquia", "fundacao", "fundo", "rpps", "empresa_dependente",
@@ -131,7 +133,7 @@ class UnidadeGestora(Base):
     id: Mapped[IntPK]
     municipio_ibge: Mapped[int] = mapped_column(ForeignKey("municipio.codigo_ibge"))
     nome: Mapped[str]
-    poder: Mapped[str]
+    poder: Mapped[str | None]
     tipo: Mapped[str]
     cnpj: Mapped[str | None]
 

@@ -14,6 +14,7 @@ o que cobre períodos em que o ETL ficou fora do ar.
 """
 
 import calendar
+from collections import Counter
 import hashlib
 import json
 import logging
@@ -227,19 +228,22 @@ def gravar_entregas(conn, refs: Referencias, exercicio: int, entregas: list[Entr
 
 def linhas_do_relatorio(rel: Relatorio, itens: list[dict]) -> list[dict]:
     linhas = {}
-    for i in itens:
+    ocorrencias: Counter = Counter()
+    for ordem, i in enumerate(itens):
         if i["exercicio"] != rel.exercicio or i.get("periodo", rel.periodo) != rel.periodo:
             raise ValueError(f"{rel}: linha de outro período na resposta: {i}")
         if i.get("co_poder", rel.co_poder) != rel.co_poder:
             raise ValueError(f"{rel}: linha de outro poder na resposta: {i}")
-        faltando = [c for c in CAMPOS_IDENTIDADE if i.get(c) is None]
+        faltando = [c for c in CAMPOS_IDENTIDADE if c != "rotulo" and i.get(c) is None]
         if faltando:
             raise ValueError(f"{rel}: linha sem {faltando}: {i}")
-        identidade = [ID_ENTE, *astuple(rel), *(i[c] for c in CAMPOS_IDENTIDADE)]
+        campos = tuple(i[c] for c in CAMPOS_IDENTIDADE)
+        ocorrencias[campos] += 1
+        ocorrencia = ocorrencias[campos]
+        # a ocorrência só entra na identidade quando há repetição, para que a
+        # chave das linhas comuns não dependa dela
+        identidade = [ID_ENTE, *astuple(rel), *campos] + ([ocorrencia] if ocorrencia > 1 else [])
         chave = hashlib.sha256(json.dumps(identidade, ensure_ascii=False).encode()).hexdigest()
-        if chave in linhas:
-            # paginação inconsistente ou mudança de formato: melhor falhar que gravar errado
-            raise ValueError(f"{rel}: linha duplicada na resposta: {i}")
         linhas[chave] = dict(
             chave=chave,
             municipio_ibge=ID_ENTE,
@@ -248,7 +252,9 @@ def linhas_do_relatorio(rel: Relatorio, itens: list[dict]) -> list[dict]:
             periodicidade=rel.periodicidade,
             periodo=rel.periodo,
             co_poder=rel.co_poder,
-            **{c: i[c] for c in CAMPOS_IDENTIDADE},
+            **dict(zip(CAMPOS_IDENTIDADE, campos)),
+            ocorrencia=ocorrencia,
+            ordem=ordem,
             valor=i["valor"],
         )
     return list(linhas.values())
@@ -283,7 +289,9 @@ def coletar_relatorio(
             municipio_ibge=ID_ENTE, demonstrativo=rel.demonstrativo, exercicio=rel.exercicio,
             periodicidade=rel.periodicidade, periodo=rel.periodo, co_poder=rel.co_poder,
         )
-        resumo = carregar_versionado(conn, SiconfiLinha.__table__, linhas, coleta_id, ["chave"], escopo)
+        resumo = carregar_versionado(
+            conn, SiconfiLinha.__table__, linhas, coleta_id, ["chave"], escopo, no_lugar=("ordem",)
+        )
     log.info("%s: %d linhas; %s", rel, len(linhas), resumo)
 
 

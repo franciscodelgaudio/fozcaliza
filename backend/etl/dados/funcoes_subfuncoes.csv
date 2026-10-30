@@ -1,0 +1,143 @@
+tipo,codigo,descricao,versao,vigencia_inicio,vigencia_fim,funcao_tipica
+funcao,01,Legislativa,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,031,Ação Legislativa,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,01
+subfuncao,032,Controle Externo,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,01
+funcao,02,Judiciária,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,061,Ação Judiciária,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,02
+subfuncao,062,Defesa do Interesse Público no Processo Judiciário,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,02
+funcao,03,Essencial à Justiça,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,091,Defesa da Ordem Jurídica,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,03
+subfuncao,092,Representação Judicial e Extrajudicial,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,03
+funcao,04,Administração,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,121,Planejamento e Orçamento,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
+subfuncao,122,Administração Geral,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
+subfuncao,123,Administração Financeira,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
+subfuncao,125,Normatização e Fiscalização,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
+subfuncao,126,Tecnologia da Informação,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
+subfuncao,127,Ordenamento Territorial,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
+subfuncao,128,Formação de Recursos Humanos,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
+subfuncao,129,Administração de Receitas,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
+subfuncao,130,Administração de Concessões,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
+subfuncao,131,Comunicação Social,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,04
+funcao,05,Defesa Nacional,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,151,Defesa Aérea,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,05
+subfuncao,152,Defesa Naval,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,05
+subfuncao,153,Defesa Terrestre,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,05
+funcao,06,Segurança Pública,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,181,Policiamento,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,06
+subfuncao,182,Defesa Civil,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,06
+subfuncao,183,Informação e Inteligência,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,06
+funcao,07,Relações Exteriores,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,211,Relações Diplomáticas,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,07
+subfuncao,212,Cooperação Internacional,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,07
+funcao,08,Assistência Social,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,241,Assistência ao Idoso,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,2024,08
+subfuncao,242,Assistência ao Portador de Deficiência,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,2024,08
+subfuncao,243,Assistência à Criança e ao Adolescente,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,08
+subfuncao,244,Assistência Comunitária,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,08
+funcao,09,Previdência Social,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,271,Previdência Básica,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,09
+subfuncao,272,Previdência do Regime Estatutário,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,09
+subfuncao,273,Previdência Complementar,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,09
+subfuncao,274,Previdência Especial,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,09
+funcao,10,Saúde,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,301,Atenção Básica,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,10
+subfuncao,302,Assistência Hospitalar e Ambulatorial,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,10
+subfuncao,303,Suporte Profilático e Terapêutico,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,10
+subfuncao,304,Vigilância Sanitária,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,10
+subfuncao,305,Vigilância Epidemiológica,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,10
+subfuncao,306,Alimentação e Nutrição,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,10
+funcao,11,Trabalho,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,331,Proteção e Benefícios ao Trabalhador,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,11
+subfuncao,332,Relações de Trabalho,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,11
+subfuncao,333,Empregabilidade,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,11
+subfuncao,334,Fomento ao Trabalho,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,11
+funcao,12,Educação,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,361,Ensino Fundamental,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,12
+subfuncao,362,Ensino Médio,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,12
+subfuncao,363,Ensino Profissional,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,12
+subfuncao,364,Ensino Superior,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,12
+subfuncao,365,Educação Infantil,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,12
+subfuncao,367,Educação Especial,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,12
+subfuncao,368,Educação Básica,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2012,,12
+funcao,13,Cultura,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,391,"Patrimônio Histórico, Artístico e Arqueológico",Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,13
+subfuncao,392,Difusão Cultural,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,13
+funcao,14,Direitos da Cidadania,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,421,Custódia e Reintegração Social,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,14
+subfuncao,422,"Direitos Individuais, Coletivos e Difusos",Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,14
+subfuncao,423,Assistência aos Povos Indígenas,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,14
+funcao,15,Urbanismo,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,451,Infra-Estrutura Urbana,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,15
+subfuncao,452,Serviços Urbanos,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,15
+subfuncao,453,Transportes Coletivos Urbanos,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,15
+funcao,16,Habitação,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,481,Habitação Rural,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,16
+subfuncao,482,Habitação Urbana,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,16
+funcao,17,Saneamento,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,511,Saneamento Básico Rural,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,17
+subfuncao,512,Saneamento Básico Urbano,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,17
+funcao,18,Gestão Ambiental,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,541,Preservação e Conservação Ambiental,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,18
+subfuncao,542,Controle Ambiental,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,18
+subfuncao,543,Recuperação de Áreas Degradadas,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,18
+subfuncao,544,Recursos Hídricos,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,18
+subfuncao,545,Meteorologia,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,18
+funcao,19,Ciência e Tecnologia,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,571,Desenvolvimento Científico,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,19
+subfuncao,572,Desenvolvimento Tecnológico e Engenharia,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,19
+subfuncao,573,Difusão do Conhecimento Científico e Tecnológico,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,19
+funcao,20,Agricultura,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,601,Promoção da Produção Vegetal,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,2012,20
+subfuncao,603,Defesa Sanitária Vegetal,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,2012,20
+subfuncao,604,Defesa Sanitária Animal,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,2012,20
+subfuncao,605,Abastecimento,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,20
+subfuncao,606,Extensão Rural,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,20
+subfuncao,607,Irrigação,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,20
+subfuncao,608,Promoção da Produção Agropecuária,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2013,,20
+subfuncao,609,Defesa Agropecuária,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2013,,20
+funcao,21,Organização Agrária,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,631,Reforma Agrária,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,21
+subfuncao,632,Colonização,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,21
+funcao,22,Indústria,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,661,Promoção Industrial,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,22
+subfuncao,662,Produção Industrial,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,22
+subfuncao,663,Mineração,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,22
+subfuncao,664,Propriedade Industrial,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,22
+subfuncao,665,Normalização e Qualidade,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,22
+funcao,23,Comércio e Serviços,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,691,Promoção Comercial,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,23
+subfuncao,692,Comercialização,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,23
+subfuncao,693,Comércio Exterior,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,23
+subfuncao,694,Serviços Financeiros,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,23
+subfuncao,695,Turismo,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,23
+funcao,24,Comunicações,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,721,Comunicações Postais,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,24
+subfuncao,722,Telecomunicações,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,24
+funcao,25,Energia,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,751,Conservação de Energia,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,25
+subfuncao,752,Energia Elétrica,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,25
+subfuncao,753,Combustíveis Minerais,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,25
+subfuncao,754,Biocombustíveis,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,25
+funcao,26,Transporte,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,781,Transporte Aéreo,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,26
+subfuncao,782,Transporte Rodoviário,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,26
+subfuncao,783,Transporte Ferroviário,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,26
+subfuncao,784,Transporte Hidroviário,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,26
+subfuncao,785,Transportes Especiais,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,26
+funcao,27,Desporto e Lazer,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,811,Desporto de Rendimento,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,27
+subfuncao,812,Desporto Comunitário,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,27
+subfuncao,813,Lazer,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,27
+funcao,28,Encargos Especiais,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,
+subfuncao,841,Refinanciamento da Dívida Interna,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,28
+subfuncao,842,Refinanciamento da Dívida Externa,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,28
+subfuncao,843,Serviço da Dívida Interna,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,28
+subfuncao,844,Serviço da Dívida Externa,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,28
+subfuncao,845,Outras Transferências,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,28
+subfuncao,846,Outros Encargos Especiais,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2002,,28
+subfuncao,847,Transferências para a Educação Básica,Portaria MOG 42/1999 (consolidada até Portaria SOF 67/2012),2008,,28
+subfuncao,241,Assistência à Pessoa Idosa,Portaria SOF/MPO 169/2024,2025,,08
+subfuncao,242,Assistência à Pessoa com Deficiência,Portaria SOF/MPO 169/2024,2025,,08
+subfuncao,245,Serviços Socioassistenciais,Portaria SOF/MPO 169/2024,2025,,08
+subfuncao,246,Segurança de Renda,Portaria SOF/MPO 169/2024,2025,,08

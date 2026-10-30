@@ -133,9 +133,10 @@ def carregar_versionado(
     conn: Connection,
     tabela: Table,
     linhas: list[dict],
-    coleta_id: int,
+    coleta_id: int | None,
     chaves: list[str],
     escopo: dict[str, Any],
+    no_lugar: tuple[str, ...] = (),
 ) -> ResumoCarga:
     """Carga de tabela com DadoBruto (valido_de/valido_ate), sem sobrescrever nada.
 
@@ -144,14 +145,18 @@ def carregar_versionado(
     - linha igual: intocada (rodar duas vezes não muda nada);
     - linha vigente dentro de `escopo` que não veio na carga: versão encerrada.
 
-    `escopo` deve descrever exatamente o que a requisição cobre (ex.: um
-    relatório), senão linhas de fora dela seriam dadas como removidas.
+    `escopo` deve descrever exatamente o que a carga cobre (ex.: um relatório),
+    senão linhas de fora dela seriam dadas como removidas.
+    `coleta_id` nulo: cada linha traz o seu (tabelas derivadas de dado bruto).
+    `no_lugar`: colunas que não são valor (ex.: posição no relatório); são
+    atualizadas na versão vigente em vez de gerar versão nova.
     """
     dados = [c for c in tabela.c if c.name not in COLUNAS_CONTROLE and c.computed is None]
+    colunas_tmp = dados + ([tabela.c.coleta_id] if coleta_id is None else [])
     tmp = Table(
         f"tmp_{tabela.name}",
         MetaData(),
-        *[Column(c.name, c.type) for c in dados],
+        *[Column(c.name, c.type) for c in colunas_tmp],
         prefixes=["TEMPORARY"],
         postgresql_on_commit="DROP",
     )
@@ -165,7 +170,8 @@ def carregar_versionado(
         t.c[k].is_not_distinct_from(tmp.c[k]) if t.c[k].nullable else t.c[k] == tmp.c[k]
         for k in chaves
     ])
-    diferente = or_(*[t.c[c.name].is_distinct_from(tmp.c[c.name]) for c in dados if c.name not in chaves])
+    valores = [c.name for c in dados if c.name not in chaves and c.name not in no_lugar]
+    diferente = or_(*[t.c[v].is_distinct_from(tmp.c[v]) for v in valores])
     no_escopo = [t.c[k].is_(None) if v is None else t.c[k] == v for k, v in escopo.items()]
 
     alteradas = conn.execute(
@@ -176,12 +182,19 @@ def carregar_versionado(
         .where(vigente, *no_escopo, ~exists().where(mesma_chave))
         .values(valido_ate=func.now())
     ).rowcount
+    if no_lugar:
+        conn.execute(
+            update(t)
+            .where(vigente, mesma_chave, or_(*[t.c[c].is_distinct_from(tmp.c[c]) for c in no_lugar]))
+            .values({c: tmp.c[c] for c in no_lugar})
+        )
+    origem = tmp.c.coleta_id if coleta_id is None else literal(coleta_id, BigInteger)
     # rowcount não é confiável em INSERT ... SELECT; conta pelo RETURNING
     inseridas = len(conn.execute(
         pg_insert(t)
         .from_select(
             [c.name for c in dados] + ["coleta_id"],
-            select(*tmp.c, literal(coleta_id, BigInteger)),
+            select(*[tmp.c[c.name] for c in dados], origem),
         )
         .on_conflict_do_nothing(index_elements=chaves, index_where=vigente)
         .returning(t.c.id)

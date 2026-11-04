@@ -48,15 +48,26 @@ function parse(xml: string): Registro[] {
   return registros;
 }
 
+/** Decodifica o XML pelo BOM: UTF-16 LE/BE ou UTF-8. */
+export function texto(b: Buffer): string {
+  if (b[0] === 0xff && b[1] === 0xfe) return b.toString("utf16le", 2);
+  if (b[0] === 0xfe && b[1] === 0xff) return Buffer.from(b.subarray(2)).swap16().toString("utf16le");
+  return b.toString("utf8", b[0] === 0xef && b[1] === 0xbb && b[2] === 0xbf ? 3 : 0);
+}
+
 const cache = new Map<string, Promise<Registro[]>>();
 
+/** Recorte de obras de anos anteriores (dados/tce-obras/<ano>, ver scripts/baixar-tce.mjs --obras). */
+export const PASTA_OBRAS = process.env.TCE_OBRAS ?? join(PASTA_DADOS, "..", "tce-obras");
+
 /** Registros de um XML, pelo nome do tema no arquivo (ex.: "Empenho"). Arquivo ausente = lista vazia. */
-export function registros(ano: number, nome: string): Promise<Registro[]> {
-  const chave = `${ano}/${nome}`;
+export function registros(ano: number, nome: string, pasta: string = PASTA_DADOS): Promise<Registro[]> {
+  const chave = `${pasta}|${ano}/${nome}`;
   let p = cache.get(chave);
   if (!p) {
-    const caminho = join(PASTA_DADOS, String(ano), `${ano}_${MUNICIPIO_IBGE6}_${nome}.xml`);
-    p = readFile(caminho, "utf8").then(parse, (erro: NodeJS.ErrnoException) => {
+    const caminho = join(pasta, String(ano), `${ano}_${MUNICIPIO_IBGE6}_${nome}.xml`);
+    // Arquivos gerados até ~2023 vêm em UTF-16 (BOM FF FE); os mais novos, em UTF-8.
+    p = readFile(caminho).then((b) => parse(texto(b)), (erro: NodeJS.ErrnoException) => {
       if (erro.code === "ENOENT") return [];
       throw erro;
     });
@@ -66,9 +77,9 @@ export function registros(ano: number, nome: string): Promise<Registro[]> {
   return p;
 }
 
-export async function anos(): Promise<number[]> {
+export async function anos(pasta: string = PASTA_DADOS): Promise<number[]> {
   try {
-    const nomes = await readdir(PASTA_DADOS);
+    const nomes = await readdir(pasta);
     return nomes.filter((n) => /^\d{4}$/.test(n)).map(Number).sort((a, b) => b - a);
   } catch {
     return [];

@@ -67,6 +67,8 @@
   --fz-cinza-100: #eef0f3;
   --fz-linha: #e3e6ea;
   --fz-fundo-alt: #f4f6f8;
+  --fz-fundo-verde: #f6f8f7;
+  --fz-fundo-painel: #f7faf8;
   --fz-alerta-800: #8a3c00;
   --fz-alerta-700: #9a4300;
   --fz-alerta-100: #fdebdd;
@@ -127,6 +129,8 @@
   --color-cinza-100: var(--fz-cinza-100);
   --color-linha: var(--fz-linha);
   --color-fundo-alt: var(--fz-fundo-alt);
+  --color-fundo-verde: var(--fz-fundo-verde);
+  --color-fundo-painel: var(--fz-fundo-painel);
   --color-alerta-800: var(--fz-alerta-800);
   --color-alerta-700: var(--fz-alerta-700);
   --color-alerta-100: var(--fz-alerta-100);

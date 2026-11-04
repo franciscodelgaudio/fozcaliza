@@ -4,7 +4,7 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Pill, Rotulo, type Tom } from "@/components/fz/base";
+import { Pill, type Tom } from "@/components/fz/base";
 import { formatarData, formatarInteiro, formatarMoeda, formatarMoedaCurta } from "@/lib/formato";
 import { porCidade } from "@/lib/licitacoes/agregados";
 import { cidadeDe, nomeExibido, urlLicitacoes, type ParametrosLicitacoes } from "@/lib/licitacoes/consulta";
@@ -12,6 +12,8 @@ import type { FonteDado } from "@/lib/licitacoes/fontes";
 import { ORIGENS, type Origem } from "@/lib/licitacoes/fornecedores";
 import { rotuloGestao } from "@/lib/licitacoes/gestao";
 import { MODALIDADES_COMPETITIVAS, type Licitacao, type Vencedor } from "@/lib/licitacoes/modelo";
+import type { CasamentoPncp } from "@/lib/licitacoes/pncp";
+import { SINAIS, type EstadoSinal, type ResultadoSinais } from "@/lib/licitacoes/sinais";
 
 /** Página do SIC da prefeitura no Portal da Transparência (pedido via e-SIC ou presencial). Conferir: pendência 5. */
 export const URL_LAI = "http://www2.pmfi.pr.gov.br/giig/portais/portaldatransparencia/Templates/wfrmPaginaPadrao.aspx?IdLinkItem=206";
@@ -19,20 +21,22 @@ export const URL_LAI = "http://www2.pmfi.pr.gov.br/giig/portais/portaldatranspar
 const campo =
   "min-h-11 w-full rounded-[10px] border border-cinza-300 bg-white px-3 text-[15px] text-tinta focus-visible:border-verde-700";
 const botaoPrimario =
-  "inline-flex min-h-11 items-center justify-center rounded-[10px] bg-verde-700 px-5 text-[15px] font-semibold text-white hover:bg-verde-800";
+  "inline-flex min-h-11 items-center justify-center rounded-[10px] bg-verde-700 px-4 text-[15px] font-bold text-white hover:bg-verde-800";
 const botaoSecundario =
-  "inline-flex min-h-11 items-center justify-center rounded-[10px] border border-verde-borda bg-white px-4 text-[15px] font-semibold text-verde-800 hover:bg-verde-050";
+  "inline-flex min-h-11 items-center justify-center rounded-[10px] border border-cinza-300 bg-white px-4 text-[15px] font-semibold text-verde-700 hover:bg-verde-050";
+const botaoLimpar =
+  "inline-flex min-h-11 items-center justify-center rounded-[10px] border border-verde-borda bg-white px-4 text-[15px] font-semibold text-verde-700 hover:bg-verde-050";
 
 const rotuloOrigem = (o: Origem) => ORIGENS.find((x) => x.id === o)?.rotulo ?? o;
 const tomOrigem = (o: Origem): Tom => (o === "sem-informacao" ? "alerta" : "neutro");
 
 export function Abas({ aba }: { aba: "licitacoes" | "obras" }) {
   const classe = (ativa: boolean) =>
-    `inline-flex min-h-11 items-center rounded-[10px] px-4 text-[15px] font-semibold ${
-      ativa ? "bg-verde-900 text-white" : "bg-white text-verde-800 border border-verde-borda hover:bg-verde-050"
+    `inline-flex min-h-11 items-center rounded-full border px-5 text-[15px] font-bold ${
+      ativa ? "border-verde-700 bg-verde-700 text-white" : "border-cinza-300 bg-white text-tinta hover:bg-verde-050"
     }`;
   return (
-    <nav aria-label="O que explorar" className="flex gap-2">
+    <nav aria-label="O que explorar" className="flex flex-wrap gap-2">
       <Link href="/licitacoes/explorar" aria-current={aba === "licitacoes" ? "page" : undefined} className={classe(aba === "licitacoes")}>
         Licitações
       </Link>
@@ -53,7 +57,7 @@ type Opcoes = {
 
 function Campo({ rotulo, children, largo }: { rotulo: string; children: ReactNode; largo?: boolean }) {
   return (
-    <label className={`flex flex-col gap-1 text-[14px] font-medium text-cinza-700 ${largo ? "min-w-64 flex-[2]" : "min-w-40 flex-1"}`}>
+    <label className={`flex flex-col gap-1.5 text-[13px] font-semibold text-cinza-700 ${largo ? "min-w-64 flex-[2]" : "min-w-40 flex-1"}`}>
       {rotulo}
       {children}
     </label>
@@ -61,9 +65,9 @@ function Campo({ rotulo, children, largo }: { rotulo: string; children: ReactNod
 }
 
 export function FiltrosLicitacoes({ base, p, opcoes }: { base: string; p: ParametrosLicitacoes; opcoes: Opcoes }) {
-  const temFiltro = !!(p.q || p.modalidade || p.gestao || p.cidade || p.uf || p.entidade || p.agrupar || p.ordem);
+  const temFiltro = !!(p.q || p.modalidade || p.gestao || p.cidade || p.uf || p.entidade || p.sinais || p.agrupar || p.ordem);
   return (
-    <form action={base} className="flex flex-col gap-3 rounded-2xl border border-linha bg-fundo-alt p-4">
+    <form action={base} className="flex flex-col gap-3 rounded-[14px] border border-linha bg-white p-4">
       {p.agrupar && <input type="hidden" name="agrupar" value={p.agrupar} />}
       <div className="flex flex-wrap items-end gap-3">
         <Campo rotulo="Buscar" largo>
@@ -83,6 +87,14 @@ export function FiltrosLicitacoes({ base, p, opcoes }: { base: string; p: Parame
               </option>
             ))}
             <option value="todas">Todas as entidades</option>
+          </select>
+        </Campo>
+        <Campo rotulo="Sinais de risco">
+          <select name="sinais" defaultValue={p.sinais ?? ""} className={campo}>
+            <option value="">Todos</option>
+            <option value="1">1 ou mais</option>
+            <option value="2">2 ou mais</option>
+            <option value="3">3 ou mais</option>
           </select>
         </Campo>
         <Campo rotulo="Modalidade">
@@ -134,7 +146,7 @@ export function FiltrosLicitacoes({ base, p, opcoes }: { base: string; p: Parame
         <div className="flex gap-2">
           <button className={botaoPrimario}>Filtrar</button>
           {temFiltro && (
-            <Link href={base} className={botaoSecundario}>
+            <Link href={base} className={botaoLimpar}>
               Limpar
             </Link>
           )}
@@ -156,26 +168,55 @@ function secretariaTexto(l: Licitacao) {
   return l.secretaria.nome + (l.secretaria.outras ? ` e outras ${l.secretaria.outras}` : "");
 }
 
-export function ItemLicitacao({ l, href, hrefCelular, selecionado }: { l: Licitacao; href: string; hrefCelular: string; selecionado: boolean }) {
+const corSinais = (n: number) => (n >= 2 ? "text-alerta-800" : n === 1 ? "text-exemplo-texto" : "text-verde-800");
+const rotuloSinais = (n: number) => (n === 0 ? "Nenhum sinal" : n === 1 ? "1 sinal" : `${n} sinais`);
+
+function PontosSinais({ r }: { r: ResultadoSinais }) {
+  return (
+    <span className="flex items-center gap-2 text-[13px]">
+      <span aria-hidden="true" className="flex gap-[3px]">
+        {r.estados.map((e, i) => (
+          <span key={i} className={`size-2.5 rounded-full ${e === "presente" ? "bg-alerta-700" : "bg-linha"}`} />
+        ))}
+      </span>
+      <span className={`font-bold ${corSinais(r.presentes)}`}>{rotuloSinais(r.presentes)}</span>
+    </span>
+  );
+}
+
+export function ItemLicitacao({
+  l,
+  href,
+  hrefCelular,
+  selecionado,
+  sinais,
+}: {
+  l: Licitacao;
+  href: string;
+  hrefCelular: string;
+  selecionado: boolean;
+  sinais?: ResultadoSinais;
+}) {
   const conteudo = (
     <>
-      <span className="flex items-baseline justify-between gap-3 text-[14px] text-cinza-600">
+      <span className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 text-[13px] text-cinza-600">
         <span>
           {l.modalidade} {l.numero} · {secretariaTexto(l)}
         </span>
         <span className="shrink-0">{l.gestao ? rotuloGestao(l.gestao) : ""}</span>
       </span>
-      <span className="line-clamp-2 text-[17px] font-semibold text-tinta">{l.objeto}</span>
-      <span className="flex items-baseline justify-between gap-3 text-[15px] text-cinza-700">
+      <span className="line-clamp-2 text-[17px] font-bold text-tinta">{l.objeto}</span>
+      <span className="flex items-baseline justify-between gap-3 text-[14px] text-cinza-700">
         <span className="min-w-0 truncate">{linhaVencedor(l)}</span>
-        <span className="shrink-0 font-semibold text-tinta tabular-nums">
+        <span className="shrink-0 font-bold text-tinta tabular-nums">
           {l.valorHomologado !== null ? formatarMoedaCurta(l.valorHomologado) : `estimado ${formatarMoedaCurta(l.valorEstimado)}`}
         </span>
       </span>
+      {sinais && <PontosSinais r={sinais} />}
     </>
   );
-  const classe = `flex min-w-0 flex-col gap-1 rounded-xl border p-4 ${
-    selecionado ? "border-verde-700 bg-verde-050" : "border-linha bg-white hover:border-verde-300"
+  const classe = `flex min-w-0 flex-col gap-2 rounded-xl border-2 bg-white px-[18px] py-4 ${
+    selecionado ? "border-verde-700" : "border-linha hover:border-verde-300"
   }`;
   return (
     <li>
@@ -194,7 +235,7 @@ export function AgregadoCidades({ ls, base, p }: { ls: Licitacao[]; base: string
   const cidades = porCidade(ls);
   const total = cidades.reduce((t, c) => t + c.valor, 0);
   return (
-    <div className="overflow-x-auto rounded-xl border border-linha">
+    <div className="overflow-x-auto rounded-[14px] border border-linha bg-white">
       <table className="w-full min-w-[560px] text-left text-[15px]">
         <caption className="sr-only">Valor homologado por cidade do fornecedor</caption>
         <thead className="bg-fundo-alt text-[13px] tracking-[.06em] text-cinza-600 uppercase">
@@ -256,29 +297,139 @@ function idadeEmpresa(v: Vencedor, l: Licitacao): string | null {
   return `empresa aberta há ${anos} anos na data da disputa`;
 }
 
-function Numero({ rotulo, valor, tom, nota }: { rotulo: string; valor: string; tom?: "alerta"; nota?: string }) {
+function Numero({ rotulo, valor, tom, nota }: { rotulo: string; valor: string; tom?: "alerta" | "bom"; nota?: string }) {
+  const cor = tom === "alerta" ? "text-alerta-800" : tom === "bom" ? "text-verde-800" : "text-tinta";
   return (
-    <div className="flex flex-col gap-1 rounded-xl border border-linha bg-white p-4">
-      <Rotulo>{rotulo}</Rotulo>
-      <p className={`text-[22px] leading-tight font-bold [overflow-wrap:anywhere] tabular-nums ${tom === "alerta" ? "text-alerta-700" : "text-tinta"}`}>
-        {valor}
-      </p>
-      {nota && <p className="text-[14px] text-cinza-600">{nota}</p>}
+    <div className="flex flex-col gap-0.5">
+      <span className="text-[12px] text-cinza-600">{rotulo}</span>
+      <strong className={`text-[18px] leading-tight font-bold [overflow-wrap:anywhere] tabular-nums ${cor}`}>{valor}</strong>
+      {nota && <span className="text-[13px] text-cinza-600">{nota}</span>}
     </div>
   );
 }
 
 function Secao({ titulo, children }: { titulo: string; children: ReactNode }) {
   return (
-    <section className="flex flex-col gap-3">
-      <h3 className="text-[19px] font-bold text-verde-900">{titulo}</h3>
+    <section className="flex flex-col gap-2.5">
+      <h3 className="text-[16px] font-bold text-tinta">{titulo}</h3>
       {children}
     </section>
   );
 }
 
-export function FichaLicitacao({ l, fontes, titulo = "h2" }: { l: Licitacao; fontes: FonteDado[]; titulo?: "h1" | "h2" }) {
+const ROTULO_ESTADO: Record<EstadoSinal, string> = {
+  presente: "Presente",
+  ausente: "Ausente",
+  "sem-informacao": "Sem informação",
+  "nao-se-aplica": "Não se aplica",
+};
+
+function IconeSinal({ e }: { e: EstadoSinal }) {
+  const comum = { width: 18, height: 18, viewBox: "0 0 24 24", role: "img", "aria-label": ROTULO_ESTADO[e], className: "mt-0.5 shrink-0" } as const;
+  if (e === "presente")
+    return (
+      <svg {...comum} fill="var(--fz-alerta-700)">
+        <circle cx="12" cy="12" r="9" />
+      </svg>
+    );
+  if (e === "sem-informacao")
+    return (
+      <svg {...comum} fill="none" stroke="var(--fz-cinza-400)" strokeWidth="2" strokeDasharray="3 3">
+        <circle cx="12" cy="12" r="8" />
+      </svg>
+    );
+  return (
+    <svg {...comum} fill="none" stroke={e === "ausente" ? "var(--fz-cinza-300)" : "var(--fz-cinza-200)"} strokeWidth="2">
+      <circle cx="12" cy="12" r="8" />
+    </svg>
+  );
+}
+
+function SinaisDeRisco({ r }: { r: ResultadoSinais }) {
+  return (
+    <section className="flex flex-col gap-2.5">
+      <h3 className="text-[16px] font-bold text-tinta">
+        Sinais de risco: <span className={corSinais(r.presentes)}>{r.presentes} de 7</span>
+      </h3>
+      <ul className="flex flex-col gap-2">
+        {SINAIS.map((d, i) => {
+          const e = r.estados[i];
+          return (
+            <li key={d.id} className="flex items-start gap-2.5 text-[14px]">
+              <IconeSinal e={e} />
+              <span className="flex flex-col gap-0.5">
+                <span className={e === "presente" ? "font-bold text-tinta" : "text-cinza-600"}>
+                  {d.titulo}
+                  {e === "sem-informacao" && <span className="text-[13px]"> · sem informação</span>}
+                  {e === "nao-se-aplica" && <span className="text-[13px]"> · não se aplica</span>}
+                </span>
+                {e === "presente" && <span className="text-[13px] text-cinza-600">Pode ter explicação: {d.explicacao}</span>}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      <Link href="/licitacoes/metodologia#sinais" className="self-start text-[14px] font-semibold text-verde-700 hover:text-verde-800">
+        Como cada sinal é calculado
+      </Link>
+    </section>
+  );
+}
+
+function NoPncp({ l, c }: { l: Licitacao; c: CasamentoPncp }) {
+  if (c.estado !== "achada")
+    return (
+      <Secao titulo="No portal nacional (PNCP)">
+        <p className="text-[15px] text-cinza-700">
+          {c.estado === "sem-chave"
+            ? "O TCE-PR não informou o número do processo desta licitação, então não dá para procurá-la no PNCP."
+            : c.estado === "ambigua"
+              ? `Há ${c.candidatos} compras no PNCP com o processo ${l.processo}; não dá para saber qual é esta.`
+              : `Não encontramos no PNCP nenhuma compra da prefeitura com o processo ${l.processo}.`}
+        </p>
+      </Secao>
+    );
+  const p = c.compra;
+  return (
+    <Secao titulo="No portal nacional (PNCP)">
+      <p className="text-[15px]">
+        {p.publicadoEm ? `Publicada em ${formatarData(p.publicadoEm)}` : "Publicada"}
+        {p.aberturaPropostas ? ` · propostas a partir de ${formatarData(p.aberturaPropostas)}` : ""}
+        {p.encerramentoPropostas ? ` até ${formatarData(p.encerramentoPropostas)}` : ""}
+        {p.situacao ? ` · ${p.situacao}` : ""}.
+      </p>
+      {p.documentos.length > 0 ? (
+        <ul className="flex flex-col divide-y divide-linha rounded-xl border border-linha">
+          {p.documentos.map((d) => (
+            <li key={d.url} className="flex flex-wrap items-baseline justify-between gap-2 px-4 py-2 text-[15px]">
+              <a href={d.url} target="_blank" rel="noreferrer" className="font-semibold text-verde-700 underline underline-offset-2">
+                {d.tipo}
+                <span className="sr-only"> (abre o documento no PNCP)</span>
+              </a>
+              <span className="text-[13px] text-cinza-600">{d.publicadoEm ? formatarData(d.publicadoEm) : ""}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-[15px] text-cinza-700">Nenhum documento publicado no PNCP.</p>
+      )}
+    </Secao>
+  );
+}
+
+export function FichaLicitacao({
+  l,
+  fontes,
+  sinais,
+  titulo = "h2",
+}: {
+  l: Licitacao;
+  fontes: FonteDado[];
+  sinais?: ResultadoSinais | null;
+  titulo?: "h1" | "h2";
+}) {
   const Titulo = titulo;
+  const pncp = l.pncp;
   const principal = l.vencedores[0];
   const estimado = l.valorEstimadoItensVencidos;
   const desconto = l.valorHomologado !== null && estimado ? 1 - l.valorHomologado / estimado : null;
@@ -286,24 +437,24 @@ export function FichaLicitacao({ l, fontes, titulo = "h2" }: { l: Licitacao; fon
   const itensMarcados = l.itens.filter((i) => i.divididoEntre > 1 || i.valorPublicadoComoTotal).length;
 
   return (
-    <article className="@container flex min-w-0 flex-col gap-6 overflow-hidden rounded-2xl border border-linha bg-white">
-      <header className="flex flex-col gap-2 bg-verde-050 p-5">
-        <Rotulo>
+    <article className="@container flex min-w-0 flex-col gap-[22px] overflow-hidden rounded-2xl border border-verde-borda bg-white">
+      <header className="flex flex-col gap-2 bg-verde-050 px-6 py-[22px]">
+        <p className="text-[13px] font-bold text-verde-800">
           {l.modalidade} {l.numero} · {secretariaTexto(l)}
           {l.gestao ? ` · gestão ${rotuloGestao(l.gestao)}` : ""}
-        </Rotulo>
-        <Titulo className="text-[21px] leading-snug font-bold text-tinta">{l.objeto}</Titulo>
+        </p>
+        <Titulo className="text-[22px] leading-[1.25] font-extrabold text-tinta">{l.objeto}</Titulo>
         {principal ? (
-          <p className="text-[15px] text-cinza-700">
+          <p className="text-[14px] text-cinza-700">
             {l.vencedores.length > 1 ? "Vencedoras: " : "Vencedora: "}
             <strong className="text-tinta">{nomeExibido(principal)}</strong> ({cidadeDe(principal)})
             {idadeEmpresa(principal, l) ? ` · ${idadeEmpresa(principal, l)}` : ""}
             {l.vencedores.length > 1 ? ` e mais ${l.vencedores.length - 1}` : ""}
           </p>
         ) : (
-          <p className="text-[15px] text-cinza-700">O TCE-PR ainda não publicou o vencedor desta licitação.</p>
+          <p className="text-[14px] text-cinza-700">O TCE-PR ainda não publicou o vencedor desta licitação.</p>
         )}
-        <p className="text-[14px] text-cinza-600">
+        <p className="text-[13px] text-cinza-600">
           {l.entidade.curto} · Situação: {l.situacao}
           {l.dataEdital ? ` · Edital ${formatarData(l.dataEdital)}` : ""}
           {l.dataAbertura ? ` · Abertura ${formatarData(l.dataAbertura)}` : ""}
@@ -311,9 +462,9 @@ export function FichaLicitacao({ l, fontes, titulo = "h2" }: { l: Licitacao; fon
         </p>
       </header>
 
-      <div className="flex flex-col gap-6 px-5">
+      <div className="flex flex-col gap-[22px] px-6">
         {l.valorHomologado !== null && estimado ? (
-          <div className="grid gap-3 @md:grid-cols-2 @3xl:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 @md:grid-cols-3">
             <Numero
               rotulo="Preço estimado"
               valor={formatarMoeda(estimado)}
@@ -327,18 +478,20 @@ export function FichaLicitacao({ l, fontes, titulo = "h2" }: { l: Licitacao; fon
             <Numero
               rotulo="Desconto obtido"
               valor={desconto !== null ? pct(desconto) : "—"}
-              tom={desconto !== null && desconto <= 0.02 ? "alerta" : undefined}
+              tom={desconto === null ? undefined : desconto <= 0.02 ? "alerta" : "bom"}
               nota={desconto !== null && desconto <= 0.02 ? "Pouco ou nenhum desconto sobre o estimado." : undefined}
             />
           </div>
         ) : (
-          <div className="grid gap-3 @md:grid-cols-2 @3xl:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 @md:grid-cols-3">
             <Numero rotulo="Preço estimado" valor={formatarMoeda(l.valorEstimado)} />
           </div>
         )}
 
+        {sinais && <SinaisDeRisco r={sinais} />}
+
         <Secao titulo="Quem disputou">
-          <p className="text-[17px]">
+          <p className="text-[15px]">
             {l.participantes === null
               ? "O TCE-PR não publicou os participantes desta licitação."
               : `${formatarInteiro(l.participantes)} ${l.participantes === 1 ? "participante" : "participantes"}${
@@ -422,8 +575,15 @@ export function FichaLicitacao({ l, fontes, titulo = "h2" }: { l: Licitacao; fon
           </Secao>
         )}
 
+        <NoPncp l={l} c={pncp} />
+
         <div className="flex flex-wrap gap-2">
-          <Link href={`/${l.ano}/licitacoes/${l.id}`} className={botaoSecundario}>
+          {pncp?.estado === "achada" && (
+            <a href={pncp.compra.url} target="_blank" rel="noreferrer" className={botaoPrimario}>
+              Ver no PNCP <span className="sr-only">(abre o portal nacional em nova aba)</span>
+            </a>
+          )}
+          <Link href={`/${l.ano}/licitacoes/${l.id}`} className={pncp?.estado === "achada" ? botaoSecundario : botaoPrimario}>
             Ver o registro no TCE-PR
           </Link>
           <a href={URL_LAI} target="_blank" rel="noreferrer" className={botaoSecundario}>
@@ -432,7 +592,7 @@ export function FichaLicitacao({ l, fontes, titulo = "h2" }: { l: Licitacao; fon
         </div>
       </div>
 
-      <footer className="flex flex-col gap-2 border-t border-linha bg-fundo-alt px-5 py-4 text-[14px] text-cinza-700">
+      <footer className="flex flex-col gap-2 border-t border-cinza-100 px-6 py-4 text-[13px] leading-normal text-cinza-600">
         <p>
           Sinais indicam onde vale perguntar, não irregularidade. A empresa ou a prefeitura podem enviar esclarecimentos, que serão
           publicados nesta ficha.

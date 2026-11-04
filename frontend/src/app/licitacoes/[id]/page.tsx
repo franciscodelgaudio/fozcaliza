@@ -6,6 +6,7 @@ import { FichaLicitacao } from "@/components/fz/licitacoes";
 import { publica } from "@/lib/licitacoes/consulta";
 import { fontesLicitacoes } from "@/lib/licitacoes/fontes";
 import { licitacaoPorId } from "@/lib/licitacoes/modelo";
+import { sinaisDaLicitacao } from "@/lib/licitacoes/sinais";
 
 export async function generateMetadata({ params }: PageProps<"/licitacoes/[id]">): Promise<Metadata> {
   const l = await licitacaoPorId((await params).id);
@@ -14,8 +15,8 @@ export async function generateMetadata({ params }: PageProps<"/licitacoes/[id]">
 
 export default function Page(props: PageProps<"/licitacoes/[id]">) {
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-4">
-      <Link href="/licitacoes/explorar" className="inline-flex min-h-11 w-fit items-center text-[15px] text-verde-700 underline underline-offset-2">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-6 sm:px-6">
+      <Link href="/licitacoes/explorar" className="inline-flex min-h-11 w-fit items-center text-[15px] font-semibold text-verde-700 hover:text-verde-800">
         ← Voltar para o explorador
       </Link>
       <Suspense fallback={<p className="py-10 text-cinza-600">Lendo os dados do TCE-PR…</p>}>
@@ -28,5 +29,6 @@ export default function Page(props: PageProps<"/licitacoes/[id]">) {
 async function Ficha({ params }: PageProps<"/licitacoes/[id]">) {
   const l = await licitacaoPorId((await params).id);
   if (!l) notFound();
-  return <FichaLicitacao l={publica(l)} fontes={await fontesLicitacoes(l.ano)} titulo="h1" />;
+  const [fontes, sinais] = await Promise.all([fontesLicitacoes(l.ano), sinaisDaLicitacao(l)]);
+  return <FichaLicitacao l={publica(l)} fontes={fontes} sinais={sinais} titulo="h1" />;
 }

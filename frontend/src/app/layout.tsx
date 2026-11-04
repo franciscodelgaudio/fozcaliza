@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Public_Sans } from "next/font/google";
-import { FlagStripe, SiteFooter, SiteHeader } from "@/components/fz/base";
+import { SiteFooter, SiteHeader } from "@/components/fz/base";
 import "./globals.css";
 
 const publicSans = Public_Sans({
@@ -25,8 +25,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Pular para o conteúdo
         </a>
         <SiteHeader />
-        <FlagStripe />
-        <main id="conteudo" className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
+        <main id="conteudo" className="flex w-full flex-1 flex-col">
           {children}
         </main>
         <SiteFooter />

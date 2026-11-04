@@ -1,0 +1,890 @@
+[
+  {
+    "id_projeto_investimento": "104549.41-06",
+    "id_geometria": 1261654,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "106726.41-38",
+    "id_geometria": 1307030,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "107829.41-00",
+    "id_geometria": 1334200,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "107945.41-08",
+    "id_geometria": 1329237,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "113666.41-50",
+    "id_geometria": 1434308,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "113668.41-41",
+    "id_geometria": 1434310,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "113671.41-80",
+    "id_geometria": 1438239,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "113673.41-70",
+    "id_geometria": 1434316,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "116107.41-76",
+    "id_geometria": 1446948,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "116112.41-05",
+    "id_geometria": 1446954,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "116114.41-96",
+    "id_geometria": 1446964,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "116122.41-51",
+    "id_geometria": 1446972,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "118644.41-18",
+    "id_geometria": 1453545,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "12952.41-68",
+    "id_geometria": 22925,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "13139.41-11",
+    "id_geometria": 23180,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "13464.41-56",
+    "id_geometria": 23786,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "14141.41-27",
+    "id_geometria": 24823,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "143683.41-74",
+    "id_geometria": 1850617,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "143686.41-00",
+    "id_geometria": 1850620,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "148853.41-00",
+    "id_geometria": 1859486,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "148856.41-37",
+    "id_geometria": 1859489,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "148861.41-66",
+    "id_geometria": 1859494,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "148865.41-48",
+    "id_geometria": 1859498,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "148869.41-20",
+    "id_geometria": 1859502,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "148872.41-68",
+    "id_geometria": 1859505,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "15016.41-18",
+    "id_geometria": 26177,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "15272.41-22",
+    "id_geometria": 477404,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "15634.35-71",
+    "id_geometria": 1009939,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Shapefile"
+  },
+  {
+    "id_projeto_investimento": "160044.41-64",
+    "id_geometria": 1892458,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "160045.41-00",
+    "id_geometria": 1892459,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "160046.41-55",
+    "id_geometria": 1892461,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "160047.41-00",
+    "id_geometria": 1892462,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "164618.41-53",
+    "id_geometria": 1946018,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "164725.41-30",
+    "id_geometria": 1948833,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "164725.41-30",
+    "id_geometria": 1948834,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "19276.41-74",
+    "id_geometria": 477411,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "19639.41-77",
+    "id_geometria": 1666537,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "20651.41-19",
+    "id_geometria": 37160,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "2471.41-52",
+    "id_geometria": 4627,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "25188.41-30",
+    "id_geometria": 44627,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "26097.41-51",
+    "id_geometria": 46255,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "27676.41-99",
+    "id_geometria": 49496,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "27705.41-60",
+    "id_geometria": 49530,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "28436.41-72",
+    "id_geometria": 539749,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "31313.41-27",
+    "id_geometria": 59244,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "31396.41-04",
+    "id_geometria": 59420,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "31449.41-15",
+    "id_geometria": 59519,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "32466.41-60",
+    "id_geometria": 61685,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "35166.41-92",
+    "id_geometria": 165127,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "3582.41-67",
+    "id_geometria": 6296,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "37357.41-96",
+    "id_geometria": 1281209,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "3773.41-14",
+    "id_geometria": 6467,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Shapefile"
+  },
+  {
+    "id_projeto_investimento": "3775.41-49",
+    "id_geometria": 6470,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "38777.41-92",
+    "id_geometria": 560844,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "38791.41-99",
+    "id_geometria": 233997,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "39893.41-59",
+    "id_geometria": 658964,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "39909.41-80",
+    "id_geometria": 244134,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "40774.41-60",
+    "id_geometria": 1726756,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "42416.41-33",
+    "id_geometria": 837254,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "42470.41-99",
+    "id_geometria": 1071637,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "4254.41-10",
+    "id_geometria": 7292,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "426.41-83",
+    "id_geometria": 1324,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "43147.41-46",
+    "id_geometria": 477409,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "43150.41-29",
+    "id_geometria": 477405,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "4479.41-40",
+    "id_geometria": 7685,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "4510.35-40",
+    "id_geometria": 1009900,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "4511.35-08",
+    "id_geometria": 7771,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "4513.21-04",
+    "id_geometria": 8242,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "4598.41-09",
+    "id_geometria": 7890,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "4617.41-45",
+    "id_geometria": 14998,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "46777.41-14",
+    "id_geometria": 395381,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "4818.41-70",
+    "id_geometria": 8219,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "5023.41-60",
+    "id_geometria": 8524,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "51043.41-84",
+    "id_geometria": 779532,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "5242.35-32",
+    "id_geometria": 8792,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "5248.41-90",
+    "id_geometria": 14977,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "54346.41-05",
+    "id_geometria": 688777,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "5781.41-48",
+    "id_geometria": 9594,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "5782.41-05",
+    "id_geometria": 9595,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "58046.41-17",
+    "id_geometria": 717487,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "5807.41-25",
+    "id_geometria": 9631,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "5807.41-25",
+    "id_geometria": 9632,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "5884.41-19",
+    "id_geometria": 9736,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "5996.41-00",
+    "id_geometria": 9888,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "6078.41-37",
+    "id_geometria": 10288,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "6366.41-81",
+    "id_geometria": 12460,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "83369.41-90",
+    "id_geometria": 1900955,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "90363.41-04",
+    "id_geometria": 849793,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "90502.35-13",
+    "id_geometria": 1213256,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Shapefile"
+  },
+  {
+    "id_projeto_investimento": "91455.41-07",
+    "id_geometria": 1213251,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Shapefile"
+  },
+  {
+    "id_projeto_investimento": "95803.41-07",
+    "id_geometria": 1291639,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "97449.41-50",
+    "id_geometria": 1477592,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "97946.41-51",
+    "id_geometria": 1094465,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "98319.41-79",
+    "id_geometria": 1114340,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "98319.41-79",
+    "id_geometria": 1114341,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "98322.41-51",
+    "id_geometria": 1114578,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "98322.41-51",
+    "id_geometria": 1114579,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "98326.41-77",
+    "id_geometria": 1114733,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "98326.41-77",
+    "id_geometria": 1114734,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "98330.41-06",
+    "id_geometria": 1114865,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "98330.41-06",
+    "id_geometria": 1114866,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "98336.41-34",
+    "id_geometria": 1115240,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "98336.41-34",
+    "id_geometria": 1115241,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "98338.41-47",
+    "id_geometria": 1115337,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "98338.41-47",
+    "id_geometria": 1115338,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "98341.41-20",
+    "id_geometria": 1115474,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "98341.41-20",
+    "id_geometria": 1115475,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "98345.41-45",
+    "id_geometria": 1115710,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "98345.41-45",
+    "id_geometria": 1115711,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  },
+  {
+    "id_projeto_investimento": "98349.41-60",
+    "id_geometria": 1432511,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Par de Lat/Long"
+  },
+  {
+    "id_projeto_investimento": "98349.41-60",
+    "id_geometria": 1432512,
+    "sg_uf": "PR",
+    "no_municipio": "Foz do Iguaçu",
+    "cod_ibge": 4108304,
+    "origem_geometria": "Vetorização"
+  }
+]

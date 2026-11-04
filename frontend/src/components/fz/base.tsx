@@ -2,35 +2,34 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { NavPrincipal } from "./nav";
 
-/** Faixas branco + verde abaixo do topo, como na bandeira de Foz do Iguaçu. */
+/** Largura e respiro padrão do conteúdo. */
+export function Container({ children, className = "", largo = false }: { children: ReactNode; className?: string; largo?: boolean }) {
+  return <div className={`mx-auto w-full ${largo ? "max-w-[1240px]" : "max-w-[1200px]"} px-4 sm:px-6 ${className}`}>{children}</div>;
+}
+
+/** Faixas branco + verde, como na bandeira de Foz do Iguaçu (abaixo de blocos verde-escuros). */
 export function FlagStripe() {
   return (
-    <div aria-hidden="true">
-      <div className="h-2 bg-white" />
-      <div className="h-2 bg-verde-700" />
+    <div aria-hidden="true" className="flex flex-col gap-1.5 pb-1.5">
+      <div className="h-1.5 bg-white" />
+      <div className="h-1.5 bg-verde-700" />
     </div>
   );
 }
 
 export function SiteHeader() {
   return (
-    <header className="bg-verde-900 text-white">
-      <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
-        <Link href="/" className="inline-flex min-h-11 items-center text-xl font-semibold tracking-tight">
-          Foz<span className="font-extrabold">caliza</span>
+    <header className="border-b border-linha bg-white">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-wrap items-center gap-x-8 gap-y-2 px-4 py-4 sm:px-6">
+        <Link href="/" className="inline-flex min-h-11 items-center text-[22px] font-extrabold tracking-[-0.02em] text-tinta">
+          Foz<span className="text-verde-700">caliza</span>
         </Link>
-        <nav aria-label="Seções" className="order-last flex basis-full flex-wrap items-center gap-1 text-[15px] sm:order-none sm:basis-auto sm:flex-1">
-          <Link href="/licitacoes" className="-ml-3 inline-flex min-h-11 items-center rounded-[10px] px-3 hover:bg-white/10 sm:ml-0">
-            Licitações e obras
-          </Link>
-          <span className="inline-flex min-h-11 items-center px-3 text-white/70" title="Em preparação">
-            Saúde <span className="ml-1.5 text-[13px]">(em breve)</span>
-          </span>
-        </nav>
+        <NavPrincipal />
         <Link
           href="/licitacoes/explorar"
-          className="ml-auto inline-flex min-h-11 items-center rounded-[10px] bg-white px-4 text-[15px] font-semibold text-verde-900 hover:bg-verde-100 sm:ml-0"
+          className="ml-auto inline-flex min-h-11 items-center rounded-[10px] border border-verde-700 px-4 text-[15px] font-bold text-verde-700 hover:bg-verde-050 sm:ml-0"
         >
           Explorar os dados
         </Link>
@@ -41,17 +40,23 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="mt-12 bg-verde-900 text-white">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-8 text-[14px] text-white/85">
-        <p>
-          Fozcaliza é feito com dados públicos: <strong className="text-white">TCE-PR</strong> (Portal Informação para Todos),{" "}
-          <strong className="text-white">Receita Federal</strong> (CNPJ) e <strong className="text-white">IBGE</strong>.
+    <footer className="mt-16 border-t border-[#1c6444] bg-verde-900 text-[#dcefe3]">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-wrap justify-between gap-x-8 gap-y-3 px-4 py-8 text-[14px] sm:px-6">
+        <p className="max-w-3xl self-center">
+          Fontes: TCE-PR (Portal Informação para Todos), Receita Federal (CNPJ) e IBGE. Dados declarados pelas próprias entidades; podem
+          mudar.
         </p>
-        <p>
-          <Link href="/" className="underline underline-offset-2 hover:text-white">
+        <div className="flex flex-wrap gap-x-6">
+          <Link href="/licitacoes/metodologia" className="inline-flex min-h-11 items-center text-white underline underline-offset-2">
+            Como calculamos
+          </Link>
+          <Link href="/licitacoes/explorar" className="inline-flex min-h-11 items-center text-white underline underline-offset-2">
+            Explorar os dados
+          </Link>
+          <Link href="/" className="inline-flex min-h-11 items-center text-white underline underline-offset-2">
             Dados brutos do TCE-PR
           </Link>
-        </p>
+        </div>
       </div>
     </footer>
   );
@@ -76,7 +81,15 @@ export function Pill({ tom = "neutro", children }: { tom?: Tom; children: ReactN
 
 /** Selo "Dado real · fonte" ou "Exemplo · dados fictícios". */
 export function SourceBadge({ fonte, exemplo = false }: { fonte?: string; exemplo?: boolean }) {
-  return exemplo ? <Pill tom="exemplo">Exemplo · dados fictícios</Pill> : <Pill tom="real">Dado real · {fonte}</Pill>;
+  return (
+    <span
+      className={`inline-flex items-center rounded-md px-2.5 py-1.5 text-[12px] font-extrabold tracking-[0.08em] uppercase ${
+        exemplo ? "bg-exemplo text-exemplo-texto" : "bg-verde-100 text-verde-800"
+      }`}
+    >
+      {exemplo ? "Exemplo · dados fictícios" : `Dado real · ${fonte}`}
+    </span>
+  );
 }
 
 /** Rótulo em caixa alta (13 px, espaçado). */

@@ -1,13 +1,16 @@
 import { Suspense } from "react";
 import { Carregando } from "@/components/filtros";
+import { Container } from "@/components/fz/base";
 import { VisaoAno } from "@/components/visao-ano";
 import { anos } from "@/lib/tce/dados";
 
 export default function Home() {
   return (
-    <Suspense fallback={<Carregando />}>
-      <UltimoAno />
-    </Suspense>
+    <Container className="py-6">
+      <Suspense fallback={<Carregando />}>
+        <UltimoAno />
+      </Suspense>
+    </Container>
   );
 }
 

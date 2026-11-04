@@ -4,6 +4,7 @@
 import { normalizar } from "@/lib/tce/consulta";
 import { nomeCidade, type Fornecedor } from "./fornecedores";
 import { filtrarEntidade, type Licitacao } from "./modelo";
+import { sinaisDe } from "./sinais";
 
 export const POR_PAGINA = 25;
 
@@ -14,16 +15,18 @@ export type ParametrosLicitacoes = {
   cidade?: string;
   uf?: string;
   entidade?: string;
+  /** Mínimo de sinais de risco presentes ("1", "2", "3"). */
+  sinais?: string;
   agrupar?: string;
   ordem?: string;
   pagina?: string;
   sel?: string;
 };
 
-const CHAVES: (keyof ParametrosLicitacoes)[] = ["q", "modalidade", "gestao", "cidade", "uf", "entidade", "agrupar", "ordem", "pagina", "sel"];
+const CHAVES: (keyof ParametrosLicitacoes)[] = ["q", "modalidade", "gestao", "cidade", "uf", "entidade", "sinais", "agrupar", "ordem", "pagina", "sel"];
 
 /** Parâmetros que restringem a lista (o resto é navegação). */
-export const FILTROS: (keyof ParametrosLicitacoes)[] = ["q", "modalidade", "gestao", "cidade", "uf", "entidade"];
+export const FILTROS: (keyof ParametrosLicitacoes)[] = ["q", "modalidade", "gestao", "cidade", "uf", "entidade", "sinais"];
 
 type Fonte = Record<string, string | string[] | null | undefined> | URLSearchParams;
 
@@ -82,6 +85,11 @@ export function filtrar(todas: Licitacao[], p: ParametrosLicitacoes): Licitacao[
   if (p.cidade) {
     const c = normalizar(p.cidade);
     ls = ls.filter((l) => l.vencedores.some((v) => v.municipio && normalizar(v.municipio) === c && (!p.uf || v.uf === p.uf)));
+  }
+  const minimo = Number(p.sinais);
+  if (minimo > 0) {
+    const s = sinaisDe(todas);
+    ls = ls.filter((l) => (s.get(l.id)?.presentes ?? 0) >= minimo);
   }
   if (p.q) {
     const termos = normalizar(p.q).split(/\s+/).filter(Boolean);

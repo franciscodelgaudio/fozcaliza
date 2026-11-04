@@ -29,12 +29,21 @@ jobs:
       - name: Baixar ano corrente e anos já presentes
         run: node scripts/baixar-tce.mjs --existentes "$(date -u +%Y)"
 
+      # APIs federais instáveis: falha aqui não impede o commit do TCE-PR.
+      - name: Baixar obras com recurso federal (Obrasgov.br)
+        continue-on-error: true
+        run: node scripts/baixar-obrasgov.mjs
+
+      - name: Baixar contratações e documentos do PNCP
+        continue-on-error: true
+        run: node scripts/baixar-pncp.mjs "$(date -u +%Y)"
+
       - name: Consultar na Receita os CNPJs novos (e os consultados há mais de 30 dias)
         run: node scripts/consultar-cnpj.mjs --dias 30
 
       - name: Commit se o TCE publicou algo novo
         run: |
-          git add dados/tce dados/cnpj dados/ibge
+          git add dados/tce dados/tce-obras dados/obrasgov dados/pncp dados/cnpj dados/ibge
           if git diff --cached --quiet; then
             echo "Nada mudou no TCE-PR."
             exit 0

@@ -1,0 +1,24 @@
+{
+  "fonte": "TCE-PR — Portal Informação para Todos",
+  "pagina": "https://pit.tce.pr.gov.br/Dados/DadosConsulta/Consolidado",
+  "ano": 2014,
+  "temas": {
+    "Obra": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2014/2014_410830_Obra.zip",
+      "lastModified": "Sat, 28 Mar 2020 12:22:40 GMT",
+      "arquivos": {
+        "2014_410830_Intervencao.xml": {
+          "bytes": 54734,
+          "sha256": "a7e4ac81f56ba556e06884d4155dcd27474bdeaecc228e841e9a4926274efe25"
+        },
+        "2014_410830_IntervencaoBem.xml": {
+          "bytes": 49478,
+          "sha256": "d3f9083fd04f4a9b9c51ebf27c1f61529aa0bbefda2bff85a28d3d2cead7678d"
+        }
+      }
+    }
+  },
+  "recorte": {
+    "Obra": null
+  }
+}

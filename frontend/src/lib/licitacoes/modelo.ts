@@ -14,6 +14,7 @@
 import { agrupar, anos, numero, registros, type Registro } from "@/lib/tce/dados";
 import { baseCnpj, fornecedor, type BaseCnpj, type Fornecedor } from "./fornecedores";
 import { gestaoDe } from "./gestao";
+import { casadorPncp, type CasamentoPncp } from "./pncp";
 
 /** Folga sobre o valor máximo antes de considerar que o valor publicado já é o total do item. */
 const FOLGA_VALOR_TOTAL = 1.5;
@@ -21,7 +22,7 @@ const FOLGA_VALOR_TOTAL = 1.5;
 export type Entidade = { id: string; slug: string; nome: string; curto: string; principal: boolean };
 
 /** Nome curto de cada entidade, para listas e filtros. */
-const NOMES_CURTOS: Record<string, string> = {
+export const NOMES_CURTOS: Record<string, string> = {
   "12294": "Prefeitura",
   "933995": "Fundação Municipal de Saúde",
   "10891": "Fundação Cultural",
@@ -105,6 +106,8 @@ export type Licitacao = {
   modalidade: string;
   modalidadeOriginal: string;
   numero: string;
+  /** Número do processo administrativo de origem ("84400/2025"), quando informado. Chave para o PNCP. */
+  processo: string | null;
   objeto: string;
   tipoObjeto: TipoObjeto;
   criterio: string | null;
@@ -123,6 +126,8 @@ export type Licitacao = {
   participantes: number | null;
   itens: ItemVencido[];
   contratos: ContratoResumo[];
+  /** Compra correspondente no PNCP (pelo número do processo), ou por que não foi achada. */
+  pncp: CasamentoPncp;
   /** Referência no TCE-PR, para citar a fonte. */
   fonte: { arquivo: string; dataReferencia: string; ultimoEnvio: string };
 };
@@ -144,7 +149,9 @@ export function capitalizar(nome: string): string {
     .replace(/\.$/, "")
     .toLowerCase()
     .split(/\s+/)
-    .map((p, i) => (i > 0 && MINUSCULAS.has(p) ? p : p.charAt(0).toUpperCase() + p.slice(1)))
+    .map((p, i) =>
+      i > 0 && MINUSCULAS.has(p) ? p : /^(i{1,3}|iv|vi{0,3}|ix|xi{0,3})$/.test(p) ? p.toUpperCase() : p.charAt(0).toUpperCase() + p.slice(1),
+    )
     .join(" ");
 }
 
@@ -245,6 +252,7 @@ async function montar(ano: number, cache: BaseCnpj): Promise<Licitacao[]> {
     registros(ano, "LicitacaoXEmpenho"),
     registros(ano, "EmpenhoXContrato"),
   ]);
+  const casarPncp = await casadorPncp(ano);
   const empenhoPorId = new Map(empenhos.map((e) => [e.idEmpenho, e]));
   const empenhosDe = (ids: Registro[] | undefined) =>
     (ids ?? []).map((x) => empenhoPorId.get(x.idEmpenho)).filter((e): e is Registro => !!e);
@@ -255,7 +263,7 @@ async function montar(ano: number, cache: BaseCnpj): Promise<Licitacao[]> {
   const contratoPorId = new Map(contratos.map((c) => [c.idContrato, c]));
   const contratosPor = agrupar(lxc, "idLicitacao");
 
-  return lic.map((r) => {
+  const ls: Licitacao[] = lic.map((r) => {
     const { itens, vencedores } = montarItens(vencPor.get(r.idLicitacao) ?? [], cache);
     const docsParticipantes = new Set((partPor.get(r.idLicitacao) ?? []).map((p) => chaveDoc(p.nrDocParticipanteLicitacao)));
     const homologacoes = (vencPor.get(r.idLicitacao) ?? []).map((v) => data(v.dtHomologacao)).filter(Boolean) as string[];
@@ -278,6 +286,7 @@ async function montar(ano: number, cache: BaseCnpj): Promise<Licitacao[]> {
       modalidade,
       modalidadeOriginal: r.dsModalidadeLicitacao,
       numero: `${r.nrLicitacao}/${r.nrAnoLicitacao}`,
+      processo: r.nrEditalOrigem && Number(r.nrEditalOrigem) ? `${Number(r.nrEditalOrigem)}/${r.nranoEditalOrigem}` : null,
       objeto: r.dsObjeto,
       tipoObjeto: tipoObjeto(r.dsClassificacaoObjetoLicitacao ?? ""),
       criterio: r.dsAvaliacaoLicitacao || null,
@@ -311,8 +320,11 @@ async function montar(ano: number, cache: BaseCnpj): Promise<Licitacao[]> {
         dataReferencia: (r.DataReferencia ?? "").trim(),
         ultimoEnvio: r.ultimoEnvioSIMAMNesteExercicio ?? "",
       },
+      pncp: { estado: "sem-chave" },
     };
   });
+  for (const l of ls) l.pncp = casarPncp(l);
+  return ls;
 }
 
 const montadas = new Map<number, { base: BaseCnpj; ls: Promise<Licitacao[]> }>();

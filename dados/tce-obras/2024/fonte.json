@@ -1,0 +1,68 @@
+{
+  "fonte": "TCE-PR — Portal Informação para Todos",
+  "pagina": "https://pit.tce.pr.gov.br/Dados/DadosConsulta/Consolidado",
+  "ano": 2024,
+  "temas": {
+    "Obra": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2024/2024_410830_Obra.zip",
+      "lastModified": "Sun, 05 Jul 2026 12:41:39 GMT",
+      "arquivos": {
+        "2024_410830_Intervencao.xml": {
+          "bytes": 19147,
+          "sha256": "5a853d5355deee16060b012579536249c7a7f2bb49bc9609f8a8ee4b8c9015e6"
+        },
+        "2024_410830_IntervencaoBem.xml": {
+          "bytes": 18040,
+          "sha256": "193974529e5917c25f27ff200bc5e06388220f3946ca276267384c4fa3dde159"
+        }
+      }
+    },
+    "Contrato": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2024/2024_410830_Contrato.zip",
+      "lastModified": "Sun, 05 Jul 2026 12:33:01 GMT",
+      "arquivos": {
+        "2024_410830_Contrato.xml": {
+          "bytes": 1645160,
+          "sha256": "537b982dca6b28f840852429f8df95859f86fe44afb9b6ea865d6f2f62154c68"
+        },
+        "2024_410830_ContratoAditivo.xml": {
+          "bytes": 190151,
+          "sha256": "85f6ce7fc34f4a69e1b47848590fc7fb1edfe497b1d4c21a65b44ac15a556126"
+        }
+      }
+    },
+    "Relacionamentos": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2024/2024_410830_Relacionamentos.zip",
+      "lastModified": "Sun, 05 Jul 2026 12:33:28 GMT",
+      "arquivos": {
+        "2024_410830_EmpenhoXContrato.xml": {
+          "bytes": 1718648,
+          "sha256": "645a0b1e14bc98fc33c7a02fe4d5ecab49ceea2f47d68e8a2bef93091a5137c0"
+        }
+      }
+    },
+    "Despesa": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2024/2024_410830_Despesa.zip",
+      "lastModified": "Sun, 05 Jul 2026 12:41:26 GMT",
+      "arquivos": {
+        "2024_410830_EmpenhoLiquidacao.xml": {
+          "bytes": 22004035,
+          "sha256": "dc1c7e4094db2188ecdea4b7d255081e1b380ef040133201e00025cd184da581"
+        }
+      }
+    }
+  },
+  "recorte": {
+    "Obra": null,
+    "Contrato": [
+      "Contrato",
+      "ContratoAditivo"
+    ],
+    "Relacionamentos": [
+      "EmpenhoXContrato"
+    ],
+    "Despesa": [
+      "EmpenhoLiquidacao"
+    ]
+  }
+}

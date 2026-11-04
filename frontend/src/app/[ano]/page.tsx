@@ -2,6 +2,12 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { Carregando } from "@/components/filtros";
 import { VisaoAno } from "@/components/visao-ano";
+import { anos } from "@/lib/tce/dados";
+
+// Um ano por pasta em dados/tce: todos gerados na build.
+export async function generateStaticParams() {
+  return (await anos()).map((ano) => ({ ano: String(ano) }));
+}
 
 export default function Page({ params }: PageProps<"/[ano]">) {
   return (

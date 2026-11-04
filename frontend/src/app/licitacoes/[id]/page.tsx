@@ -5,12 +5,24 @@ import { Suspense } from "react";
 import { FichaLicitacao } from "@/components/fz/licitacoes";
 import { publica } from "@/lib/licitacoes/consulta";
 import { fontesLicitacoes } from "@/lib/licitacoes/fontes";
-import { licitacaoPorId } from "@/lib/licitacoes/modelo";
+import { licitacaoPorId, licitacoes } from "@/lib/licitacoes/modelo";
 import { sinaisDaLicitacao } from "@/lib/licitacoes/sinais";
+import { anos } from "@/lib/tce/dados";
+
+// Algumas centenas por ano: todas geradas na build.
+export async function generateStaticParams() {
+  const ids = (await Promise.all((await anos()).map(async (a) => (await licitacoes(a)).map((l) => l.id)))).flat();
+  return ids.map((id) => ({ id }));
+}
+
+async function titulo(id: string) {
+  "use cache";
+  const l = await licitacaoPorId(id);
+  return l ? `${l.modalidade} ${l.numero}` : "Licitação";
+}
 
 export async function generateMetadata({ params }: PageProps<"/licitacoes/[id]">): Promise<Metadata> {
-  const l = await licitacaoPorId((await params).id);
-  return { title: l ? `${l.modalidade} ${l.numero}` : "Licitação" };
+  return { title: await titulo((await params).id) };
 }
 
 export default function Page(props: PageProps<"/licitacoes/[id]">) {
@@ -27,7 +39,12 @@ export default function Page(props: PageProps<"/licitacoes/[id]">) {
 }
 
 async function Ficha({ params }: PageProps<"/licitacoes/[id]">) {
-  const l = await licitacaoPorId((await params).id);
+  return <FichaEmCache id={(await params).id} />;
+}
+
+async function FichaEmCache({ id }: { id: string }) {
+  "use cache";
+  const l = await licitacaoPorId(id);
   if (!l) notFound();
   const [fontes, sinais] = await Promise.all([fontesLicitacoes(l.ano), sinaisDaLicitacao(l)]);
   return <FichaLicitacao l={publica(l)} fontes={fontes} sinais={sinais} titulo="h1" />;

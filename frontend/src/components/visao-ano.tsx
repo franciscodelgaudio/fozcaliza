@@ -4,6 +4,7 @@ import { anos, arquivos, fonte, registros, soma } from "@/lib/tce/dados";
 import { linhas, TEMAS } from "@/lib/tce/temas";
 
 export async function VisaoAno({ ano }: { ano: number }) {
+  "use cache";
   const [lista, f, xmls] = await Promise.all([anos(), fonte(ano), arquivos(ano)]);
   if (!f) {
     return (

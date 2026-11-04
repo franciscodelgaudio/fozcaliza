@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { Carregando, Filtros, Paginacao } from "@/components/filtros";
 import { Tabela } from "@/components/tabela";
 import { formatarInteiro, formatarMoeda } from "@/lib/formato";
-import { consultar, lerParametros } from "@/lib/tce/consulta";
+import { consultar, lerParametros, type Parametros } from "@/lib/tce/consulta";
 import { numero, type Registro } from "@/lib/tce/dados";
 import { linhas, tema } from "@/lib/tce/temas";
 
@@ -46,8 +46,11 @@ async function credores(ano: number): Promise<Registro[]> {
 async function Conteudo({ params, searchParams }: Props) {
   const { ano: a } = await params;
   if (!/^\d{4}$/.test(a)) notFound();
-  const ano = Number(a);
-  const p = lerParametros(await searchParams);
+  return <Resultado ano={Number(a)} p={lerParametros(await searchParams)} />;
+}
+
+async function Resultado({ ano, p }: { ano: number; p: Parametros }) {
+  "use cache";
   const rs = await credores(ano);
   const total = rs.reduce((t, r) => t + numero(r.vlPago), 0);
   const r = consultar(rs, p, { busca: ["nmCredor", "nrDocCredor"], valor: "vlPago" });

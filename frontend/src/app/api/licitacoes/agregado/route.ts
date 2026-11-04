@@ -11,14 +11,19 @@ export async function GET(request: NextRequest) {
   const ano = Number(sp.get("ano")) || disponiveis[0];
   if (!disponiveis.includes(ano)) return Response.json({ erro: `ano ${ano} não disponível`, anos: disponiveis }, { status: 404 });
 
+  return Response.json(await agregado(ano, sp.get("entidade") ?? undefined, sp.get("por") ?? "origem"));
+}
+
+/** Em cache por ano, entidade e agrupamento. */
+async function agregado(ano: number, entidade: string | undefined, por: string) {
+  "use cache";
   const todas = await licitacoes(ano);
-  const ls = filtrarEntidade(todas, sp.get("entidade") ?? undefined);
-  const por = sp.get("por") ?? "origem";
+  const ls = filtrarEntidade(todas, entidade);
   const [f, cnpj] = await Promise.all([fonte(ano), baseCnpj()]);
 
-  return Response.json({
+  return {
     ano,
-    entidade: sp.get("entidade") ?? "prefeitura",
+    entidade: entidade ?? "prefeitura",
     entidades: entidadesDe(todas).map(({ slug, nome, n }) => ({ slug, nome, licitacoes: n })),
     resumo: resumo(ls),
     [por === "cidade" ? "cidades" : "origens"]: por === "cidade" ? porCidade(ls) : porOrigem(ls),
@@ -26,5 +31,5 @@ export async function GET(request: NextRequest) {
       { nome: f?.fonte ?? "TCE-PR", pagina: f?.pagina, atualizado_em: f?.temas.Licitacao?.lastModified ?? null },
       { nome: cnpj.fonte, atualizado_em: cnpj.atualizado_em ?? null },
     ],
-  });
+  };
 }

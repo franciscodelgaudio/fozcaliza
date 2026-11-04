@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { Carregando, Filtros, Paginacao } from "@/components/filtros";
 import { Tabela } from "@/components/tabela";
 import { formatarInteiro, tamanho, tipoPorNome } from "@/lib/formato";
-import { consultar, entidades, lerParametros } from "@/lib/tce/consulta";
+import { consultar, entidades, lerParametros, type Parametros } from "@/lib/tce/consulta";
 import { arquivos, CAMPOS_CONTROLE, registros } from "@/lib/tce/dados";
 
 type Props = PageProps<"/[ano]/arquivos/[arquivo]">;
@@ -21,10 +21,13 @@ export default function Page(props: Props) {
 async function Conteudo({ params, searchParams }: Props) {
   const { ano: a, arquivo } = await params;
   if (!/^\d{4}$/.test(a)) notFound();
-  const ano = Number(a);
+  return <Resultado ano={Number(a)} arquivo={arquivo} p={lerParametros(await searchParams)} />;
+}
+
+async function Resultado({ ano, arquivo, p }: { ano: number; arquivo: string; p: Parametros }) {
+  "use cache";
   const info = (await arquivos(ano)).find((x) => x.nome === arquivo);
   if (!info) notFound();
-  const p = lerParametros(await searchParams);
   const rs = await registros(ano, arquivo);
 
   const campos: string[] = [];

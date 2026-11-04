@@ -19,9 +19,15 @@ export default function Page(props: Props) {
 
 async function Conteudo({ params }: Props) {
   const { ano: a, tema: slug, id } = await params;
-  const t = obterTema(slug);
-  if (!t || !/^\d{4}$/.test(a)) notFound();
-  const ano = Number(a);
+  if (!obterTema(slug) || !/^\d{4}$/.test(a)) notFound();
+  return <Detalhe ano={Number(a)} slug={slug} id={id} />;
+}
+
+// São centenas de milhares de registros: nenhum é gerado na build, cada um entra
+// no cache na primeira visita.
+async function Detalhe({ ano, slug, id }: { ano: number; slug: string; id: string }) {
+  "use cache";
+  const t = obterTema(slug)!;
   const r = (await porId(ano, t)).get(id);
   if (!r) notFound();
 

@@ -15,6 +15,7 @@ export default function Home() {
 }
 
 async function UltimoAno() {
+  "use cache";
   const [ano] = await anos();
   if (!ano) {
     return (

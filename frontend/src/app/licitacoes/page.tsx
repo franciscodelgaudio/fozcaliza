@@ -118,6 +118,7 @@ export default function Page() {
 }
 
 async function HistoriaReal() {
+  "use cache";
   const [ano] = await anos();
   if (!ano) return <Container className="py-16">Nenhum dado do TCE-PR em dados/tce.</Container>;
   const [todas, fontes, listaObras] = await Promise.all([licitacoes(ano), fontesLicitacoes(ano), todasObras()]);

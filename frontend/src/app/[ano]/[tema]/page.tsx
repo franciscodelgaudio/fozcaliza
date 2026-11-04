@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { Carregando, Filtros, Paginacao } from "@/components/filtros";
 import { Tabela } from "@/components/tabela";
 import { formatar, formatarInteiro } from "@/lib/formato";
-import { consultar, entidades, lerParametros } from "@/lib/tce/consulta";
+import { consultar, entidades, lerParametros, type Parametros } from "@/lib/tce/consulta";
 import { idDe, linhas, tema as obterTema } from "@/lib/tce/temas";
 
 type Props = PageProps<"/[ano]/[tema]">;
@@ -19,10 +19,14 @@ export default function Page(props: Props) {
 
 async function Conteudo({ params, searchParams }: Props) {
   const { ano: a, tema: slug } = await params;
-  const t = obterTema(slug);
-  if (!t || !/^\d{4}$/.test(a)) notFound();
-  const ano = Number(a);
-  const p = lerParametros(await searchParams);
+  if (!obterTema(slug) || !/^\d{4}$/.test(a)) notFound();
+  return <Resultado ano={Number(a)} slug={slug} p={lerParametros(await searchParams)} />;
+}
+
+/** Em cache por ano, tema e filtros: a mesma URL não relê nem refiltra o XML. */
+async function Resultado({ ano, slug, p }: { ano: number; slug: string; p: Parametros }) {
+  "use cache";
+  const t = obterTema(slug)!;
   const rs = await linhas(ano, t);
   const r = consultar(rs, p, { busca: t.busca, valor: t.valor?.campo, data: t.data });
   const base = `/${ano}/${t.slug}`;

@@ -4,12 +4,12 @@ import { Suspense } from "react";
 import { Container, Rotulo } from "@/components/fz/base";
 import { AgregadoCidades, Abas, FichaLicitacao, FiltrosLicitacoes, ItemLicitacao } from "@/components/fz/licitacoes";
 import { formatarData, formatarInteiro, formatarMoeda } from "@/lib/formato";
-import { consultarLicitacoes, lerParametrosLicitacoes, opcoes, publica, urlLicitacoes } from "@/lib/licitacoes/consulta";
+import { consultarLicitacoes, lerParametrosLicitacoes, opcoes, publica, urlLicitacoes, type ParametrosLicitacoes } from "@/lib/licitacoes/consulta";
 import { fontesLicitacoes } from "@/lib/licitacoes/fontes";
 import { entidadesDe, licitacoes } from "@/lib/licitacoes/modelo";
 import { sinaisDe } from "@/lib/licitacoes/sinais";
 import { FichaObra, FiltrosObras, ItemObra } from "@/components/fz/obras";
-import { consultarObras, lerParametrosObras } from "@/lib/obras/consulta";
+import { consultarObras, lerParametrosObras, type ParametrosObras } from "@/lib/obras/consulta";
 import { obras } from "@/lib/obras/modelo";
 import { anos } from "@/lib/tce/dados";
 
@@ -38,11 +38,15 @@ export default function Page(props: PageProps<"/licitacoes/explorar">) {
 
 async function Conteudo({ searchParams }: PageProps<"/licitacoes/explorar">) {
   const sp = await searchParams;
-  if (sp.aba === "obras") return <AbaObras sp={sp} />;
+  if (sp.aba === "obras") return <AbaObras p={lerParametrosObras(sp)} />;
+  return <AbaLicitacoes p={lerParametrosLicitacoes(sp)} />;
+}
 
+/** Em cache por combinação de filtros. */
+async function AbaLicitacoes({ p }: { p: ParametrosLicitacoes }) {
+  "use cache";
   const [ano] = await anos();
   if (!ano) return <p>Nenhum dado do TCE-PR em dados/tce.</p>;
-  const p = lerParametrosLicitacoes(sp);
   const [todas, fontes] = await Promise.all([licitacoes(ano), fontesLicitacoes(ano)]);
   const r = consultarLicitacoes(todas, p);
   const sinais = sinaisDe(todas);
@@ -131,8 +135,8 @@ async function Conteudo({ searchParams }: PageProps<"/licitacoes/explorar">) {
   );
 }
 
-async function AbaObras({ sp }: { sp: Record<string, string | string[] | undefined> }) {
-  const p = lerParametrosObras(sp);
+async function AbaObras({ p }: { p: ParametrosObras }) {
+  "use cache";
   const todas = await obras();
   const r = consultarObras(todas, p);
   const selecionada = p.sel ? todas.find((o) => o.id === p.sel) : undefined;

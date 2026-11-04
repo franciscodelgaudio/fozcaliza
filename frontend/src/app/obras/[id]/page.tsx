@@ -9,9 +9,18 @@ async function obraPorId(id: string) {
   return (await obras()).find((o) => o.id === id) ?? null;
 }
 
+// Cerca de mil obras: todas geradas na build.
+export async function generateStaticParams() {
+  return (await obras()).map((o) => ({ id: o.id }));
+}
+
+async function titulo(id: string) {
+  "use cache";
+  return (await obraPorId(id))?.nome ?? "Obra";
+}
+
 export async function generateMetadata({ params }: PageProps<"/obras/[id]">): Promise<Metadata> {
-  const o = await obraPorId((await params).id);
-  return { title: o ? o.nome : "Obra" };
+  return { title: await titulo((await params).id) };
 }
 
 export default function Page(props: PageProps<"/obras/[id]">) {
@@ -31,7 +40,12 @@ export default function Page(props: PageProps<"/obras/[id]">) {
 }
 
 async function Ficha({ params }: PageProps<"/obras/[id]">) {
-  const o = await obraPorId((await params).id);
+  return <FichaEmCache id={(await params).id} />;
+}
+
+async function FichaEmCache({ id }: { id: string }) {
+  "use cache";
+  const o = await obraPorId(id);
   if (!o) notFound();
   return <FichaObra o={o} titulo="h1" />;
 }

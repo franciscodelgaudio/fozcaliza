@@ -4,9 +4,23 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Suspense } from "react";
 
+// usePathname só existe em tempo de execução: o prerender usa a nav sem destaque
+// e o item ativo entra assim que a página hidrata.
 export function NavPrincipal() {
-  const ativa = usePathname().startsWith("/licitacoes");
+  return (
+    <Suspense fallback={<Nav ativa={false} />}>
+      <NavComRota />
+    </Suspense>
+  );
+}
+
+function NavComRota() {
+  return <Nav ativa={usePathname().startsWith("/licitacoes")} />;
+}
+
+function Nav({ ativa }: { ativa: boolean }) {
   return (
     <nav aria-label="Seções" className="order-last flex basis-full flex-wrap gap-x-6 gap-y-1 text-[15px] font-medium sm:order-none sm:flex-1 sm:basis-auto">
       <Link

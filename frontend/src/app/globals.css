@@ -8,7 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -49,72 +49,90 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  /* Tokens do Fozcaliza (docs/licitacoes: seção 3.2). Cores da bandeira de Foz: verde e branco. */
+  --fz-verde-900: #0a4d30;
+  --fz-verde-800: #0a5232;
+  --fz-verde-700: #0e7a43;
+  --fz-verde-300: #9fcbb0;
+  --fz-verde-200: #d3e6da;
+  --fz-verde-100: #e2f1e8;
+  --fz-verde-050: #f1f7f3;
+  --fz-verde-borda: #dce3df;
+  --fz-tinta: #15202b;
+  --fz-cinza-700: #3f4c59;
+  --fz-cinza-600: #4a5866;
+  --fz-cinza-400: #9aa5b1;
+  --fz-cinza-300: #b8c1cb;
+  --fz-cinza-200: #d5dae0;
+  --fz-cinza-100: #eef0f3;
+  --fz-linha: #e3e6ea;
+  --fz-fundo-alt: #f4f6f8;
+  --fz-alerta-800: #8a3c00;
+  --fz-alerta-700: #9a4300;
+  --fz-alerta-100: #fdebdd;
+  --fz-ambar: #d9a066;
+  --fz-exemplo: #fff4cc;
+  --fz-exemplo-texto: #6b4e00;
+
+  /* Variáveis dos componentes base (shadcn) apontando para os tokens. */
+  --background: #ffffff;
+  --foreground: var(--fz-tinta);
+  --card: #ffffff;
+  --card-foreground: var(--fz-tinta);
+  --popover: #ffffff;
+  --popover-foreground: var(--fz-tinta);
+  --primary: var(--fz-verde-700);
+  --primary-foreground: #ffffff;
+  --secondary: var(--fz-verde-050);
+  --secondary-foreground: var(--fz-verde-800);
+  --muted: var(--fz-fundo-alt);
+  --muted-foreground: var(--fz-cinza-600);
+  --accent: var(--fz-verde-050);
+  --accent-foreground: var(--fz-verde-800);
+  --destructive: var(--fz-alerta-700);
+  --border: var(--fz-linha);
+  --input: var(--fz-cinza-300);
+  --ring: var(--fz-verde-700);
+  --chart-1: var(--fz-verde-900);
+  --chart-2: var(--fz-verde-700);
+  --chart-3: var(--fz-verde-300);
+  --chart-4: var(--fz-cinza-700);
+  --chart-5: var(--fz-cinza-400);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: var(--fz-fundo-alt);
+  --sidebar-foreground: var(--fz-tinta);
+  --sidebar-primary: var(--fz-verde-700);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--fz-verde-050);
+  --sidebar-accent-foreground: var(--fz-verde-800);
+  --sidebar-border: var(--fz-linha);
+  --sidebar-ring: var(--fz-verde-700);
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+@theme inline {
+  --color-verde-900: var(--fz-verde-900);
+  --color-verde-800: var(--fz-verde-800);
+  --color-verde-700: var(--fz-verde-700);
+  --color-verde-300: var(--fz-verde-300);
+  --color-verde-200: var(--fz-verde-200);
+  --color-verde-100: var(--fz-verde-100);
+  --color-verde-050: var(--fz-verde-050);
+  --color-verde-borda: var(--fz-verde-borda);
+  --color-tinta: var(--fz-tinta);
+  --color-cinza-700: var(--fz-cinza-700);
+  --color-cinza-600: var(--fz-cinza-600);
+  --color-cinza-400: var(--fz-cinza-400);
+  --color-cinza-300: var(--fz-cinza-300);
+  --color-cinza-200: var(--fz-cinza-200);
+  --color-cinza-100: var(--fz-cinza-100);
+  --color-linha: var(--fz-linha);
+  --color-fundo-alt: var(--fz-fundo-alt);
+  --color-alerta-800: var(--fz-alerta-800);
+  --color-alerta-700: var(--fz-alerta-700);
+  --color-alerta-100: var(--fz-alerta-100);
+  --color-ambar: var(--fz-ambar);
+  --color-exemplo: var(--fz-exemplo);
+  --color-exemplo-texto: var(--fz-exemplo-texto);
 }
 
 @layer base {
@@ -126,5 +144,22 @@
   }
   html {
     @apply font-sans;
+  }
+  :focus-visible {
+    outline: 3px solid var(--fz-verde-700);
+    outline-offset: 2px;
+  }
+  .tabular-nums,
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }

@@ -1,0 +1,171 @@
+{
+  "fonte": "TCE-PR — Portal Informação para Todos",
+  "pagina": "https://pit.tce.pr.gov.br/Dados/DadosConsulta/Consolidado",
+  "ano": 2026,
+  "temas": {
+    "Licitacao": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2026/2026_410830_Licitacao.zip",
+      "lastModified": "Sun, 01 Nov 2026 14:16:12 GMT",
+      "arquivos": {
+        "2026_410830_Licitacao.xml": {
+          "bytes": 862421,
+          "sha256": "126d7c6f5813a9bab8265954ce21609cac7b4e7387c23f802ba56ee79861d7db"
+        },
+        "2026_410830_LicitacaoParticipante.xml": {
+          "bytes": 598767,
+          "sha256": "6b7c90da1260c53164bbde3d4ad571cc8020693d6087ededd8f2477e6c4851d9"
+        },
+        "2026_410830_LicitacaoVencedor.xml": {
+          "bytes": 3744477,
+          "sha256": "dd98343ae3c7c2b2c9fddab799b0b51a76c4201bdbe14b63c450988fc3cc3553"
+        }
+      }
+    },
+    "Contrato": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2026/2026_410830_Contrato.zip",
+      "lastModified": "Sun, 01 Nov 2026 14:17:02 GMT",
+      "arquivos": {
+        "2026_410830_Contrato.xml": {
+          "bytes": 1063822,
+          "sha256": "226b15d955b093b92ea8836d360a156b303cc24343b550baeb46cd6d40dd23ab"
+        },
+        "2026_410830_ContratoAditivo.xml": {
+          "bytes": 118609,
+          "sha256": "32bee3d95f7341826f4f6f8527df4cc1cafe6c626f1cde9e0015f40b4d1198c7"
+        },
+        "2026_410830_ContratoAditivoCessao.xml": {
+          "bytes": 1523,
+          "sha256": "27e3d36da04b459c7fa296c555eadbb712031624447519721d30cb9588c46892"
+        },
+        "2026_410830_ContratoAditivoPrazo.xml": {
+          "bytes": 181079,
+          "sha256": "fa702d205fd955abd6123503d3996ba2d11df5fccfec7503ea175da29df06556"
+        },
+        "2026_410830_ContratoAditivoRedimensionamento.xml": {
+          "bytes": 6776,
+          "sha256": "ecbfeb75cdea5fbda3f3b07a813cf658ec1955e901ebde8d15c9f6656f9aefa6"
+        },
+        "2026_410830_ContratoAditivoRescisao.xml": {
+          "bytes": 6272,
+          "sha256": "75e7e30fd1215b1d460882e286de205d602a13b5f8ef693e9bafbd390c655728"
+        },
+        "2026_410830_ContratoAditivoSubContratacao.xml": {
+          "bytes": 65,
+          "sha256": "93d72a1edd1dac851640228b2ff5a6ff93c1dd2c2a00b81dbc5c4b3059fe02d5"
+        }
+      }
+    },
+    "Convenio": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2026/2026_410830_Convenio.zip",
+      "lastModified": "Sun, 01 Nov 2026 14:17:50 GMT",
+      "arquivos": {
+        "2026_410830_Convenio.xml": {
+          "bytes": 65,
+          "sha256": "93d72a1edd1dac851640228b2ff5a6ff93c1dd2c2a00b81dbc5c4b3059fe02d5"
+        }
+      }
+    },
+    "Obra": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2026/2026_410830_Obra.zip",
+      "lastModified": "Sun, 01 Nov 2026 14:22:52 GMT",
+      "arquivos": {
+        "2026_410830_Intervencao.xml": {
+          "bytes": 8855,
+          "sha256": "f83d484b45c8d8bfcb6ac7dcd4455f2068b5ebe45f07fb3f2e7fd2581f47fb1e"
+        },
+        "2026_410830_IntervencaoBem.xml": {
+          "bytes": 8615,
+          "sha256": "98077f7d251bdf05fb655c51761638272ca86f396ed790f1b201d7f51f7f0f49"
+        }
+      }
+    },
+    "Despesa": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2026/2026_410830_Despesa.zip",
+      "lastModified": "Sun, 01 Nov 2026 14:22:39 GMT",
+      "arquivos": {
+        "2026_410830_Empenho.xml": {
+          "bytes": 62145891,
+          "sha256": "9f2050c109121d7d29f3493e478cc8f72867929b120884f76aa1a927a5a2cd19"
+        },
+        "2026_410830_EmpenhoLiquidacao.xml": {
+          "bytes": 16044180,
+          "sha256": "18dad094001ccb8b9c50707932a54744e6cb815999d360f3ce1e89c2f32def67"
+        },
+        "2026_410830_EmpenhoLiquidacaoDocumentoFiscal.xml": {
+          "bytes": 14998461,
+          "sha256": "91c5d882bef8ce952af3c501ba94154164f45ddd311a53f156ce958fde86bb7d"
+        },
+        "2026_410830_EmpenhoLiquidacaoEstorno.xml": {
+          "bytes": 278024,
+          "sha256": "88348658f5ef95749e719551dbfad7ce1a0dfc4e020d1d4c5a1f781c8f447ccc"
+        },
+        "2026_410830_EmpenhoPagamento.xml": {
+          "bytes": 22794397,
+          "sha256": "5909a9efe567b91a21bb8e1621f91f6cbf634ee785eac32c90a1966f60ab90bc"
+        },
+        "2026_410830_EmpenhoPagamentoEstorno.xml": {
+          "bytes": 418230,
+          "sha256": "1e06e6fd1e6b6e38ceb8c495662c6a30a90e55718eb662119be03f2a4415408e"
+        }
+      }
+    },
+    "Combustivel": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2026/2026_410830_Combustivel.zip",
+      "lastModified": "Sun, 01 Nov 2026 14:17:43 GMT",
+      "arquivos": {
+        "2026_410830_Combustivel.xml": {
+          "bytes": 4409713,
+          "sha256": "795acc1e3b6b6fe1baa834e26cef23920645e8b57e77b6ca7233858d155f3fd0"
+        },
+        "2026_410830_QuantitativaCombustivel.xml": {
+          "bytes": 49538,
+          "sha256": "99ea32cc754b06baeb04ccbf47701c865b1e4eaf9ab8fc72b9133ffae77e4e21"
+        },
+        "2026_410830_VeiculoEquipamento.xml": {
+          "bytes": 27490,
+          "sha256": "903ffff89aced401af1aed7d6fe91e81a5a1910063123c076435b0ad45d31f6b"
+        },
+        "2026_410830_QuantidadeConsumoCombustivelVeiculoEq.xml": {
+          "bytes": 898639,
+          "sha256": "3b8743feca0a1d2745ae2c1f635cc4cda2732d80a01c388e359b2a2fb6f3694e"
+        }
+      }
+    },
+    "Diarias": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2026/2026_410830_Diarias.zip",
+      "lastModified": "Sun, 01 Nov 2026 14:17:55 GMT",
+      "arquivos": {
+        "2026_410830_Diarias.xml": {
+          "bytes": 670837,
+          "sha256": "18c05a4fcf82cc5337a8b30c5ac313e03af1592ca3d82afc3c1954b1fa06be85"
+        }
+      }
+    },
+    "Relacionamentos": {
+      "url": "https://pit.tce.pr.gov.br/Arquivos/2026/2026_410830_Relacionamentos.zip",
+      "lastModified": "Sun, 01 Nov 2026 14:17:13 GMT",
+      "arquivos": {
+        "2026_410830_ContratoXConvenio.xml": {
+          "bytes": 65,
+          "sha256": "93d72a1edd1dac851640228b2ff5a6ff93c1dd2c2a00b81dbc5c4b3059fe02d5"
+        },
+        "2026_410830_EmpenhoXContrato.xml": {
+          "bytes": 766679,
+          "sha256": "f099a20623323fe3d2d808e8a7cf43e0d297b77b5dc7c1ea31634ae40879c622"
+        },
+        "2026_410830_LicitacaoXContrato.xml": {
+          "bytes": 67646,
+          "sha256": "14f3802144e3e5f3deb801490470029fb91ffa3c70f4c2fcb1f8920009f35960"
+        },
+        "2026_410830_LicitacaoXConvenio.xml": {
+          "bytes": 65,
+          "sha256": "93d72a1edd1dac851640228b2ff5a6ff93c1dd2c2a00b81dbc5c4b3059fe02d5"
+        },
+        "2026_410830_LicitacaoXEmpenho.xml": {
+          "bytes": 1110364,
+          "sha256": "ee2a5c5f6e0eafcefb9e1a72f1327f350008b1c6ca5d4461f9f9ad919dc8efe8"
+        }
+      }
+    }
+  }
+}

@@ -212,6 +212,45 @@ export default function Page() {
           de execução física e o histórico de paralisações. Quando uma obra do TCE-PR corresponde a um projeto do Obrasgov, a ficha
           mostra os dois.
         </p>
+        <p>
+          <strong>Portal da Transparência da prefeitura.</strong> O{" "}
+          <a className="text-verde-700 underline" href="https://transparencia.foz.pr.gov.br/portaltransparencia/1/obraspublicas">
+            portal da prefeitura
+          </a>{" "}
+          publica, para cada obra, o <strong>percentual executado</strong>, o valor pago, a situação e o motivo de paralisação. A obra do
+          TCE-PR é ligada à do portal pela mesma descrição e o mesmo valor (ou só pelo valor, quando ele é único). O portal é atualizado a
+          cada medição e o TCE-PR chega com dois a três meses de atraso; por isso, quando o portal diz que a obra está paralisada ou
+          concluída, essa situação prevalece.
+        </p>
+        <p>
+          <strong>Atrasada</strong>: obra em andamento, ainda dentro do prazo original, em que a fração do prazo já passada está 20
+          pontos ou mais à frente do percentual executado informado pela prefeitura (por exemplo, 70% do prazo e 45% da obra).
+        </p>
+      </Secao>
+
+      <Secao titulo="Orçamento das obras" id="orcamento">
+        <p>
+          Para as obras recentes, a prefeitura publica no portal a <strong>planilha orçamentária</strong> que serviu de base para a
+          licitação. Quando a planilha está em Excel (xlsx), lemos cada item: a fonte do preço (SINAPI, outra tabela oficial,
+          composição própria, cotação), o código, a descrição, a unidade, a quantidade e o custo unitário. Planilhas em .xls antigo ou
+          PDF ainda não são lidas, e a ficha diz isso.
+        </p>
+        <p>As fontes de preço são agrupadas assim:</p>
+        <ul className="list-disc space-y-2 pl-6">
+          <li>
+            <strong>Verificáveis</strong>: SINAPI (federal) e outras tabelas oficiais públicas (DER-PR, SICRO, e tabelas oficiais de outros
+            estados, como ORSE, SEINFRA, SUDECAP, EMOP, CPOS).
+          </li>
+          <li>
+            <strong>Não verificáveis aqui</strong>: composições próprias da prefeitura (códigos PMFI, “Composição”, “Próprio”), itens do
+            SINAPI adaptados (código com letra no fim), cotações de mercado e tabelas privadas (como SBC).
+          </li>
+        </ul>
+        <p>
+          Os itens do SINAPI são conferidos com o SINAPI do Paraná do <strong>mesmo mês-base</strong> informado na planilha. Nas planilhas
+          conferidas até agora, os itens do SINAPI batem com a tabela oficial; a parte que merece atenção é a que não tem referência
+          pública, e a ficha lista os maiores desses itens.
+        </p>
       </Secao>
 
       <Secao titulo="Gestão">
@@ -249,7 +288,10 @@ export default function Page() {
             dos informados ao TCE-PR aparece como não encontrada.
           </li>
           <li>O PNCP publica só os vencedores, não a lista de participantes; pregões sem participantes no TCE-PR continuam sem essa informação.</li>
-          <li>O percentual físico de cada obra não é publicado pelo TCE-PR; só aparece para obras com recurso federal no Obrasgov.br.</li>
+          <li>
+            O percentual executado vem do portal da prefeitura e é informado por ela mesma; o TCE-PR não publica esse dado. Obras que não
+            casam com o portal mostram só o valor pago do contrato.
+          </li>
           <li>O sinal 6 só é calculado quando a secretaria é conhecida (cerca de 4 em cada 10 licitações da prefeitura).</li>
           <li>Os itens não têm código de catálogo (CATMAT/CATSER); a comparação de preços com outras prefeituras depende do PNCP.</li>
         </ul>

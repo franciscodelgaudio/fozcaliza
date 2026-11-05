@@ -51,7 +51,19 @@ async function pedir(caminho) {
     await new Promise((ok) => setTimeout(ok, 2 ** tentativa * 1000));
   }
 }
-const json = async (caminho) => (await pedir(caminho)).json();
+/** Lê o corpo dentro das tentativas: a conexão do portal às vezes cai no meio da resposta. */
+async function corpo(caminho, ler) {
+  for (let tentativa = 1; ; tentativa++) {
+    try {
+      return await ler(await pedir(caminho));
+    } catch (erro) {
+      if (tentativa === 5) throw erro;
+      await new Promise((ok) => setTimeout(ok, 2 ** tentativa * 1000));
+    }
+  }
+}
+const json = (caminho) => corpo(caminho, (r) => r.json());
+const binario = (caminho) => corpo(caminho, async (r) => Buffer.from(await r.arrayBuffer()));
 const grava = (arq, v) => writeFile(arq, JSON.stringify(v, null, 1) + "\n");
 
 // ——— zip/xlsx sem dependências ———
@@ -161,8 +173,16 @@ function lerOrcamento(abas) {
         const t = semAcento(v);
         if (t === "data base" || t.startsWith("data base") || t.startsWith("data-base")) {
           const abaixo = String(aba.linhas[i + 1]?.[c] ?? "");
-          const m = /(\d{2})\s*[-/]\s*(\d{2,4})/.exec(abaixo) ?? /(\d{2})\s*[-/]\s*(\d{2,4})/.exec(String(v));
-          if (m) dataBase = `${m[2].length === 2 ? "20" + m[2] : m[2]}-${m[1]}`;
+          for (const fonte of [abaixo, String(v)]) {
+            const m = /(?:^|\D)(\d{1,2})\s*[-/.]\s*(\d{4}|\d{2})(?!\d)/.exec(fonte);
+            if (!m) continue;
+            const mesN = Number(m[1]);
+            const ano = Number(m[2].length === 2 ? `20${m[2]}` : m[2]);
+            if (mesN >= 1 && mesN <= 12 && ano >= 2015 && ano <= 2035) {
+              dataBase = `${ano}-${String(mesN).padStart(2, "0")}`;
+              break;
+            }
+          }
         }
         if (t === "localidade sinapi") localidade = String(aba.linhas[i + 1]?.[c] ?? "") || null;
       }
@@ -234,15 +254,32 @@ const recentes = obras.filter((o) => o.exercicio >= DESDE || !["Concluída", "Ca
 const planilhas = [];
 let lidos = 0;
 let naoLidos = 0;
+let falhas = 0;
 for (const [i, o] of recentes.entries()) {
-  const ps = await json(`/obras/planilhas?idOxy=${o.idOxy}`);
+  let ps;
+  try {
+    ps = await json(`/obras/planilhas?idOxy=${o.idOxy}`);
+  } catch (e) {
+    falhas++;
+    console.log(`  ${o.idOxy}: planilhas indisponíveis (${e.cause?.code ?? e.message})`);
+    continue;
+  }
   planilhas.push(...ps);
   const base = ps.filter((p) => /^or[cç]amento base/i.test(p.tipoPlanilha ?? ""));
   for (const p of base) {
-    for (const a of p.arquivos ?? []) {
-      const destinoJson = join(PASTA, "orcamentos", `${o.idOxy}_${p.sequencia}.json`);
+    for (const [k, a] of (p.arquivos ?? []).entries()) {
+      const destinoJson = join(PASTA, "orcamentos", `${o.idOxy}_${p.sequencia}${k ? `_${k + 1}` : ""}.json`);
       const cache = join(CACHE, `${a.idArquivo}${extname(a.nomeArquivo).toLowerCase()}`);
-      if (!existsSync(cache)) await writeFile(cache, Buffer.from(await (await pedir(`/files/arquivo/${a.idArquivo}`)).arrayBuffer()));
+      if (!existsSync(cache)) {
+        try {
+          await writeFile(cache, await binario(`/files/arquivo/${a.idArquivo}`));
+        } catch (e) {
+          naoLidos++;
+          falhas++;
+          console.log(`  ${a.nomeArquivo}: download falhou (${e.cause?.code ?? e.message})`);
+          continue;
+        }
+      }
       const buf = await readFile(cache);
       let orc = null;
       try {
@@ -256,6 +293,8 @@ for (const [i, o] of recentes.entries()) {
         idOxy: o.idOxy,
         obra: { exercicio: o.exercicio, ordemServico: o.ordemServico, descricao: o.descricao?.trim(), valorContrato: o.valorContrato },
         planilha: { sequencia: p.sequencia, tipo: p.tipoPlanilha, valorTotal: p.valorTotal, dataBase: p.dataBase, responsavel: p.responsavel },
+        // O portal às vezes classifica a planilha de um aditivo como orçamento-base; o nome do arquivo denuncia.
+        aditivo: /aditivo/i.test(a.nomeArquivo),
         arquivo: { nome: a.nomeArquivo, idArquivo: a.idArquivo, sha256: createHash("sha256").update(buf).digest("hex"), bytes: (await stat(cache)).size, interno: orc?.arquivoInterno ?? null },
         leitura: ok ? "lida" : "nao-lida",
         motivo: ok ? null : (orc?.erro ?? (/\.(xls|pdf)$/i.test(a.nomeArquivo) ? `formato ${extname(a.nomeArquivo)} ainda não lido` : "orçamento não reconhecido na planilha")),
@@ -279,4 +318,19 @@ await grava(join(PASTA, "fonte.json"), {
   orcamentos_lidos: lidos,
   orcamentos_nao_lidos: naoLidos,
 });
-console.log(`Orçamentos lidos: ${lidos}; não lidos: ${naoLidos}. Gravado em ${PASTA}`);
+console.log(`Orçamentos lidos: ${lidos}; não lidos: ${naoLidos}; falhas de rede: ${falhas}. Gravado em ${PASTA}`);
+
+// SINAPI de cada mês-base usado nos orçamentos (para conferir os itens SINAPI no mesmo mês).
+const meses = new Set();
+for (const n of await readdir(join(PASTA, "orcamentos"))) {
+  const d = JSON.parse(await readFile(join(PASTA, "orcamentos", n), "utf8"));
+  if (d.sinapi?.dataBase) meses.add(d.sinapi.dataBase);
+}
+for (const mes of [...meses].sort()) {
+  if (existsSync(join(RAIZ, "sinapi", mes, "fonte.json"))) continue;
+  try {
+    execFileSync(process.execPath, [join(dirname(fileURLToPath(import.meta.url)), "baixar-sinapi.mjs"), mes], { stdio: "inherit" });
+  } catch {
+    console.log(`SINAPI ${mes}: não foi possível baixar`);
+  }
+}

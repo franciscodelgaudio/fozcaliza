@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { FichaObra } from "@/components/fz/obras";
 import { obras } from "@/lib/obras/modelo";
+import { orcamentoDaObra } from "@/lib/obras/orcamento";
 
 async function obraPorId(id: string) {
   return (await obras()).find((o) => o.id === id) ?? null;
@@ -47,5 +48,6 @@ async function FichaEmCache({ id }: { id: string }) {
   "use cache";
   const o = await obraPorId(id);
   if (!o) notFound();
-  return <FichaObra o={o} titulo="h1" />;
+  const orcamento = o.portal ? await orcamentoDaObra(o.portal.idOxy) : null;
+  return <FichaObra o={o} orcamento={orcamento} titulo="h1" />;
 }

@@ -36,6 +36,7 @@ const COR_DISPUTA: Record<TipoDisputa, string> = {
 const COR_OBRA: Partial<Record<Alerta, string>> = {
   "em-dia": "var(--fz-verde-700)",
   "prazo-vencido": "var(--fz-ambar)",
+  atrasada: "#d98a3f",
   "sem-medicao": "#c76b2a",
   paralisada: "var(--fz-alerta-700)",
   "nao-iniciada": "var(--fz-cinza-200)",
@@ -43,6 +44,7 @@ const COR_OBRA: Partial<Record<Alerta, string>> = {
 const TEXTO_OBRA: Partial<Record<Alerta, [string, string]>> = {
   "em-dia": ["dentro do prazo", "dentro do prazo"],
   "prazo-vencido": ["com prazo vencido", "com prazo vencido"],
+  atrasada: ["atrasada", "atrasadas"],
   "sem-medicao": ["sem medição há 6+ meses", "sem medição há 6+ meses"],
   paralisada: ["paralisada", "paralisadas"],
   "nao-iniciada": ["não iniciada", "não iniciadas"],
@@ -140,12 +142,12 @@ async function HistoriaReal() {
   const ativas = listaObras.filter((o) => o.principal && ATIVAS.includes(o.alerta));
   const atuais = ativas.filter((o) => !o.desatualizada);
   const antigas = ativas.length - atuais.length;
-  const ordem: Alerta[] = ["em-dia", "prazo-vencido", "sem-medicao", "paralisada", "nao-iniciada"];
+  const ordem: Alerta[] = ["em-dia", "atrasada", "prazo-vencido", "sem-medicao", "paralisada", "nao-iniciada"];
   const conta = (a: Alerta) => atuais.filter((o) => o.alerta === a).length;
   const legendaObras = ordem
     .filter((a) => conta(a) > 0)
     .map((a) => ({ cor: COR_OBRA[a]!, n: conta(a), texto: TEXTO_OBRA[a]![conta(a) === 1 ? 0 : 1] }));
-  const problema = conta("paralisada") + conta("sem-medicao") + conta("prazo-vencido");
+  const problema = conta("paralisada") + conta("sem-medicao") + conta("prazo-vencido") + conta("atrasada");
   const disputa = porDisputa(ls).filter((t) => t.pago !== null);
   const grupo = (t: TipoDisputa) => disputa.find((x) => x.tipo === t);
   const [d2, d1, sl] = [grupo("duas-ou-mais"), grupo("uma"), grupo("sem-licitar")];
@@ -209,7 +211,7 @@ async function HistoriaReal() {
             )}.`,
             body: `Cada ponto é uma obra. ${
               problema
-                ? `${formatarInteiro(problema)} ${problema === 1 ? "pede" : "pedem"} atenção: paralisada, sem medição há seis meses ou mais, ou com o prazo vencido.`
+                ? `${formatarInteiro(problema)} ${problema === 1 ? "pede" : "pedem"} atenção: paralisada, atrasada em relação ao prazo, sem medição há seis meses ou mais, ou com o prazo vencido.`
                 : "Nenhuma está paralisada nem com prazo vencido."
             }`,
             nota: `A situação é a declarada pela prefeitura.${

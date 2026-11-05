@@ -8,6 +8,7 @@ import { URL_LAI } from "@/components/fz/licitacoes";
 import { formatarData, formatarMoeda, formatarMoedaCurta } from "@/lib/formato";
 import { urlObras, type ParametrosObras } from "@/lib/obras/consulta";
 import { MESES_SEM_MEDICAO, ROTULO_ALERTA, type Alerta, type Obra } from "@/lib/obras/modelo";
+import { VERIFICAVEL, type Orcamento } from "@/lib/obras/orcamento";
 
 const campo = "min-h-11 w-full rounded-[10px] border border-cinza-300 bg-white px-3 text-[15px] text-tinta focus-visible:border-verde-700";
 const botaoPrimario =
@@ -22,6 +23,7 @@ const TOM: Record<Alerta, string> = {
   paralisada: "bg-alerta-100 text-alerta-800",
   "sem-medicao": "bg-alerta-100 text-alerta-800",
   "prazo-vencido": "bg-alerta-100 text-alerta-800",
+  atrasada: "bg-alerta-100 text-alerta-800",
   "em-dia": "bg-verde-100 text-verde-800",
   "nao-iniciada": "bg-cinza-100 text-cinza-700",
   concluida: "bg-verde-100 text-verde-800",
@@ -64,7 +66,7 @@ export function FiltrosObras({ p }: { p: ParametrosObras }) {
         Situação
         <select name="alerta" defaultValue={p.alerta ?? ""} className={campo}>
           <option value="">Todas</option>
-          {(["paralisada", "sem-medicao", "prazo-vencido", "em-dia", "nao-iniciada"] as Alerta[]).map((a) => (
+          {(["paralisada", "sem-medicao", "prazo-vencido", "atrasada", "em-dia", "nao-iniciada"] as Alerta[]).map((a) => (
             <option key={a} value={a}>
               {ROTULO_ALERTA[a]}
             </option>
@@ -112,7 +114,11 @@ export function ItemObra({ o, p, selecionada }: { o: Obra; p: ParametrosObras; s
       </span>
       <span className="grid grid-cols-[96px_1fr_44px] items-center gap-2 text-[13px]">
         <Barra rotulo="Prazo passado" valor={o.prazoPassado} cor="var(--fz-cinza-400)" texto={o.prazoPassado === null ? "—" : pct(o.prazoPassado)} />
-        <Barra rotulo="Pago" valor={o.contrato?.pago ?? null} cor="var(--fz-verde-700)" />
+        {o.portal?.percentual !== null && o.portal?.percentual !== undefined ? (
+          <Barra rotulo="Obra feita" valor={o.portal.percentual / 100} cor="var(--fz-verde-700)" />
+        ) : (
+          <Barra rotulo="Pago" valor={o.contrato?.pago ?? null} cor="var(--fz-verde-700)" />
+        )}
       </span>
     </>
   );
@@ -132,11 +138,19 @@ export function ItemObra({ o, p, selecionada }: { o: Obra; p: ParametrosObras; s
 }
 
 function leitura(o: Obra): string {
-  const pago = o.contrato ? ` ${pct(o.contrato.pago)} do contrato já foi pago.` : "";
+  const feita = o.portal?.percentual;
+  const pago =
+    feita !== null && feita !== undefined
+      ? ` A prefeitura informa ${feita.toLocaleString("pt-BR", { maximumFractionDigits: 1 })}% da obra feita.`
+      : o.contrato
+        ? ` ${pct(o.contrato.pago)} do contrato já foi pago.`
+        : "";
   const med = o.ultimaMedicao ? ` A última medição foi em ${formatarData(o.ultimaMedicao)}.` : " Nenhuma medição foi informada.";
   switch (o.alerta) {
     case "paralisada":
-      return `A prefeitura declarou ao TCE-PR que a obra está paralisada.${med}${pago}`;
+      return `A prefeitura declarou que a obra está paralisada.${o.portal?.paralisacao?.motivo ? ` Motivo informado: ${o.portal.paralisacao.motivo}.` : ""}${med}${pago}`;
+    case "atrasada":
+      return `Já passou ${pct(o.prazoPassado ?? 0)} do prazo, mas a prefeitura informa só ${(feita ?? 0).toLocaleString("pt-BR", { maximumFractionDigits: 1 })}% da obra feita.${med}`;
     case "sem-medicao":
       return o.mesesSemMedicao !== null
         ? `Declarada em andamento, mas sem medição há ${o.mesesSemMedicao} meses.${pago}`
@@ -163,7 +177,91 @@ function Dado({ rotulo, children }: { rotulo: string; children: ReactNode }) {
   );
 }
 
-export function FichaObra({ o, titulo = "h2" }: { o: Obra; titulo?: "h1" | "h2" }) {
+const corOrigem = (o: Orcamento["porOrigem"][number]["origem"]) => (VERIFICAVEL[o] ? "bg-verde-700" : o === "propria" ? "bg-ambar" : "bg-alerta-700");
+
+function OrcamentoObra({ orc }: { orc: Orcamento }) {
+  if (orc.leitura !== "lida")
+    return (
+      <section className="flex flex-col gap-2.5">
+        <h3 className="text-[16px] font-bold">Orçamento da obra</h3>
+        <p className="text-[15px] text-cinza-700">
+          A prefeitura publicou a planilha ({orc.arquivo}), mas ainda não conseguimos lê-la: {orc.motivo}.
+        </p>
+      </section>
+    );
+  const s = orc.sinapi;
+  return (
+    <section className="flex flex-col gap-3">
+      <h3 className="text-[16px] font-bold">De onde vêm os preços do orçamento</h3>
+      <p className="text-[15px] leading-normal">
+        <strong>{pct(orc.verificavel)}</strong> do orçamento usa preços de tabelas oficiais, que qualquer pessoa pode conferir. O resto vem
+        de composições da própria prefeitura, cotações ou tabelas privadas.
+      </p>
+      <div
+        role="img"
+        aria-label={orc.porOrigem.map((x) => `${x.rotulo}: ${pct(x.fracao)}`).join("; ")}
+        className="flex h-4 overflow-hidden rounded bg-cinza-100"
+      >
+        {orc.porOrigem.map((x) => (
+          <span key={x.origem} style={{ width: `${x.fracao * 100}%` }} className={corOrigem(x.origem)} />
+        ))}
+      </div>
+      <ul className="flex flex-col gap-1 text-[14px]">
+        {orc.porOrigem.map((x) => (
+          <li key={x.origem} className="flex justify-between gap-3">
+            <span className="flex items-center gap-2">
+              <span className={`size-3 shrink-0 rounded-sm ${corOrigem(x.origem)}`} />
+              {x.rotulo}
+            </span>
+            <span className="text-right tabular-nums">
+              {pct(x.fracao)} · {formatarMoedaCurta(x.valor)}
+            </span>
+          </li>
+        ))}
+      </ul>
+      {s.conferidos !== null ? (
+        <p className="text-[14px] leading-normal text-cinza-700">
+          Conferimos os {s.conferidos.toLocaleString("pt-BR")} itens do SINAPI com a tabela oficial do Paraná de {s.dataBase?.slice(5)}/
+          {s.dataBase?.slice(0, 4)}, mês-base do orçamento:{" "}
+          {s.iguais === s.conferidos ? "todos batem." : `${s.iguais} batem e ${s.conferidos - (s.iguais ?? 0)} têm preço diferente.`}
+          {s.acima > 0 ? ` Os itens acima da tabela somam ${formatarMoeda(s.acima)} a mais.` : ""}
+        </p>
+      ) : (
+        <p className="text-[14px] text-cinza-700">
+          {s.dataBase
+            ? `O SINAPI de ${s.dataBase.slice(5)}/${s.dataBase.slice(0, 4)} não está disponível para conferência.`
+            : "A planilha não informa o mês-base do SINAPI, então os itens não foram conferidos com a tabela."}
+        </p>
+      )}
+      {orc.maioresSemReferencia.length > 0 && (
+        <div className="flex flex-col gap-1.5">
+          <p className="text-[14px] font-semibold">Maiores itens sem referência oficial</p>
+          <ul className="flex flex-col divide-y divide-linha rounded-xl border border-linha text-[14px]">
+            {orc.maioresSemReferencia.map((x, i) => (
+              <li key={i} className="flex flex-wrap items-baseline justify-between gap-2 px-3 py-2">
+                <span className="min-w-0">
+                  {x.descricao.slice(0, 120)}
+                  <span className="text-[12px] text-cinza-600"> · {x.fonte || "sem fonte"}</span>
+                </span>
+                <span className="tabular-nums">{formatarMoeda(x.valor)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <p className="text-[13px] leading-normal text-cinza-600">
+        Fonte: planilha orçamentária publicada no portal da prefeitura ({orc.arquivo}), {orc.itens.toLocaleString("pt-BR")} itens.
+        {orc.aditivo ? " Atenção: o nome do arquivo indica planilha de aditivo." : ""}{" "}
+        <Link href="/licitacoes/metodologia#orcamento" className="underline underline-offset-2">
+          Como lemos
+        </Link>
+        .
+      </p>
+    </section>
+  );
+}
+
+export function FichaObra({ o, orcamento, titulo = "h2" }: { o: Obra; orcamento?: Orcamento | null; titulo?: "h1" | "h2" }) {
   const Titulo = titulo;
   const c = o.contrato;
   const mapa = o.coordenadas ? `https://www.google.com/maps/search/?api=1&query=${o.coordenadas.lat.toFixed(6)},${o.coordenadas.lon.toFixed(6)}` : null;
@@ -184,6 +282,9 @@ export function FichaObra({ o, titulo = "h2" }: { o: Obra; titulo?: "h1" | "h2" 
           <PilulaAlerta o={o} />
           <div className="grid grid-cols-[130px_1fr_48px] items-center gap-2.5 text-[14px]">
             <Barra rotulo="Prazo que passou" valor={o.prazoPassado} cor="var(--fz-cinza-400)" grande />
+            {o.portal?.percentual !== null && o.portal?.percentual !== undefined && (
+              <Barra rotulo="Obra feita" valor={o.portal.percentual / 100} cor="var(--fz-verde-900)" grande />
+            )}
             <Barra rotulo="Contrato pago" valor={c?.pago ?? null} cor="var(--fz-verde-700)" grande />
             {o.federal?.percentual !== null && o.federal?.percentual !== undefined && (
               <Barra rotulo="Obra feita (Obrasgov)" valor={o.federal.percentual / 100} cor="var(--fz-verde-900)" grande />
@@ -205,6 +306,31 @@ export function FichaObra({ o, titulo = "h2" }: { o: Obra; titulo?: "h1" | "h2" 
           <Dado rotulo="Informação até">{mesAno(o.referencia)}</Dado>
           {o.endereco && <Dado rotulo="Local">{o.endereco}</Dado>}
         </dl>
+
+        {o.portal && (
+          <section className="flex flex-col gap-2.5">
+            <h3 className="text-[16px] font-bold">No portal da prefeitura</h3>
+            <dl className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-x-6 gap-y-3">
+              <Dado rotulo="Situação">{o.portal.situacao}</Dado>
+              <Dado rotulo="Obra feita">
+                {o.portal.percentual !== null ? `${o.portal.percentual.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}%` : "Não informado"}
+              </Dado>
+              <Dado rotulo="Valor pago">{o.portal.valorPago !== null ? formatarMoeda(o.portal.valorPago) : "Não informado"}</Dado>
+              {o.portal.valorAditivo ? <Dado rotulo="Aditivos de valor">{formatarMoeda(o.portal.valorAditivo)}</Dado> : null}
+              {o.portal.vigencia && <Dado rotulo="Vigência atualizada">{formatarData(o.portal.vigencia)}</Dado>}
+              {o.portal.paralisacao?.tipo && <Dado rotulo="Tipo de paralisação">{o.portal.paralisacao.tipo}</Dado>}
+              {o.portal.paralisacao?.previsaoReinicio && (
+                <Dado rotulo="Previsão de reinício">{formatarData(o.portal.paralisacao.previsaoReinicio)}</Dado>
+              )}
+            </dl>
+            {o.portal.paralisacao?.motivo && <p className="text-[14px] text-cinza-700">Motivo informado: {o.portal.paralisacao.motivo}</p>}
+            <a href={o.portal.url} target="_blank" rel="noreferrer" className="self-start text-[14px] font-semibold text-verde-700 underline underline-offset-2">
+              Ver a obra no portal da prefeitura <span className="sr-only">(abre em nova aba)</span>
+            </a>
+          </section>
+        )}
+
+        {orcamento && <OrcamentoObra orc={orcamento} />}
 
         <section className="flex flex-col gap-2.5">
           <h3 className="text-[16px] font-bold">Contrato e pagamentos</h3>

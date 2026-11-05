@@ -30,6 +30,7 @@ const ORDEM: Record<Alerta, number> = {
   paralisada: 0,
   "sem-medicao": 1,
   "prazo-vencido": 2,
+  atrasada: 3,
   "nao-iniciada": 3,
   "em-dia": 4,
   concluida: 5,

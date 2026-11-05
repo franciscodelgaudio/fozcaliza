@@ -16,11 +16,12 @@ import { join } from "node:path";
 import { NOMES_CURTOS, capitalizar } from "@/lib/licitacoes/modelo";
 import { anos, MUNICIPIO_IBGE6, PASTA_DADOS, PASTA_OBRAS, registros, texto, type Registro } from "@/lib/tce/dados";
 import { obrasgovPorObra, type ObraFederal } from "./obrasgov";
+import { casadorPortal, type ObraPortal } from "./portal";
 
 export type Situacao = "Em andamento" | "Paralisada" | "Não iniciada" | "Concluída" | "Cancelada" | "Outra";
 
 /** Leitura feita pelo site a partir da situação declarada, do prazo e das medições. */
-export type Alerta = "paralisada" | "sem-medicao" | "prazo-vencido" | "em-dia" | "nao-iniciada" | "concluida" | "cancelada";
+export type Alerta = "paralisada" | "sem-medicao" | "prazo-vencido" | "atrasada" | "em-dia" | "nao-iniciada" | "concluida" | "cancelada";
 
 export type ContratoObra = {
   id: string;
@@ -65,6 +66,10 @@ export type Obra = {
   /** Candidatos com o mesmo valor quando o casamento foi ambíguo. */
   contratosAmbiguos: number;
   federal: ObraFederal | null;
+  /** Mesma obra no Portal da Transparência da prefeitura: percentual executado, valor pago, paralisação. */
+  portal: ObraPortal | null;
+  /** Prazo passado − obra feita (pontos de fração), quando o portal informa o percentual. */
+  atraso: number | null;
 };
 
 /** Meses sem medição a partir dos quais uma obra "em andamento" é tratada como parada na prática. */
@@ -277,6 +282,8 @@ async function montar(): Promise<Obra[]> {
         contrato,
         contratosAmbiguos: candidatos.length > 1 ? candidatos.length : 0,
         federal: null,
+        portal: null,
+        atraso: null,
       });
     }
   }
@@ -287,8 +294,38 @@ async function montar(): Promise<Obra[]> {
     if (!atual || o.referencia >= atual.referencia) unicas.set(o.id, o);
   }
   const lista = [...unicas.values()];
-  for (const o of lista) o.federal = federais(o);
+  const casarPortal = await casadorPortal();
+  for (const o of lista) {
+    o.federal = federais(o);
+    o.portal = casarPortal(o.nome, o.valor);
+    aplicarPortal(o);
+  }
   return lista;
+}
+
+/** Diferença entre prazo passado e obra feita a partir da qual a obra é "atrasada". */
+export const ATRASO_MINIMO = 0.2;
+
+/**
+ * O portal da prefeitura é atualizado a cada medição; o TCE-PR chega com 2 a 3 meses
+ * de atraso. Quando o portal diz paralisada ou concluída, prevalece. Com o percentual
+ * executado, obra em andamento com prazo passado 20 pontos à frente da obra feita é
+ * "atrasada" (regra do design: tempo − execução ≥ 20).
+ */
+function aplicarPortal(o: Obra) {
+  const p = o.portal;
+  if (!p) return;
+  const sit = semAcento(p.situacao);
+  if (sit.startsWith("conclu")) {
+    o.alerta = "concluida";
+    o.desatualizada = false;
+  } else if (sit.startsWith("paralis")) {
+    o.alerta = "paralisada";
+    o.desatualizada = false;
+  } else if (p.percentual !== null && o.prazoPassado !== null) {
+    o.atraso = o.prazoPassado - p.percentual / 100;
+    if (["em-dia", "prazo-vencido", "sem-medicao"].includes(o.alerta) && o.prazoPassado <= 1 && o.atraso >= ATRASO_MINIMO) o.alerta = "atrasada";
+  }
 }
 
 let cache: Promise<Obra[]> | null = null;
@@ -302,12 +339,13 @@ export function obras(): Promise<Obra[]> {
   return cache;
 }
 
-export const ATIVAS: Alerta[] = ["paralisada", "sem-medicao", "prazo-vencido", "em-dia", "nao-iniciada"];
+export const ATIVAS: Alerta[] = ["paralisada", "sem-medicao", "prazo-vencido", "atrasada", "em-dia", "nao-iniciada"];
 
 export const ROTULO_ALERTA: Record<Alerta, string> = {
   paralisada: "Paralisada",
   "sem-medicao": `Sem medição há ${MESES_SEM_MEDICAO}+ meses`,
   "prazo-vencido": "Prazo vencido",
+  atrasada: "Atrasada",
   "em-dia": "Dentro do prazo",
   "nao-iniciada": "Não iniciada",
   concluida: "Concluída",

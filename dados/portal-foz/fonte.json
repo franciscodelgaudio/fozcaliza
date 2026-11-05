@@ -1,0 +1,11 @@
+{
+ "fonte": "Portal da Transparência da Prefeitura de Foz do Iguaçu",
+ "pagina": "https://transparencia.foz.pr.gov.br/portaltransparencia/1/obras",
+ "api": "https://transparencia.foz.pr.gov.br/portaltransparencia-api/api",
+ "entidade": 1,
+ "baixado_em": "2026-11-05T01:47:36.123Z",
+ "obras": 1144,
+ "obras_com_planilha_consultada": 240,
+ "orcamentos_lidos": 17,
+ "orcamentos_nao_lidos": 11
+}

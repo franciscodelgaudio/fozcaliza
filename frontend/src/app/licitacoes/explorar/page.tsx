@@ -12,6 +12,7 @@ import { compararLicitacao } from "@/lib/precos/sinapi";
 import { FichaObra, FiltrosObras, ItemObra } from "@/components/fz/obras";
 import { consultarObras, lerParametrosObras, type ParametrosObras } from "@/lib/obras/consulta";
 import { obras } from "@/lib/obras/modelo";
+import { orcamentoDaObra } from "@/lib/obras/orcamento";
 import { anos } from "@/lib/tce/dados";
 
 export const metadata: Metadata = { title: "Explorar licitações e obras" };
@@ -142,6 +143,7 @@ async function AbaObras({ p }: { p: ParametrosObras }) {
   const todas = await obras();
   const r = consultarObras(todas, p);
   const selecionada = p.sel ? todas.find((o) => o.id === p.sel) : undefined;
+  const orcamentoObra = selecionada?.portal ? await orcamentoDaObra(selecionada.portal.idOxy) : null;
   const referencia = todas.reduce((m, o) => (o.referencia > m ? o.referencia : m), "");
   return (
     <>
@@ -166,7 +168,7 @@ async function AbaObras({ p }: { p: ParametrosObras }) {
           <div className="max-lg:hidden">
             <div className="sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
               {selecionada ? (
-                <FichaObra o={selecionada} />
+                <FichaObra o={selecionada} orcamento={orcamentoObra} />
               ) : (
                 <p className="rounded-2xl border border-dashed border-cinza-300 bg-white p-6 text-[17px] text-cinza-600">
                   Escolha uma obra na lista para ver a ficha.

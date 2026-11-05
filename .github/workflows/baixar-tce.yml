@@ -38,6 +38,10 @@ jobs:
         continue-on-error: true
         run: node scripts/baixar-sinapi.mjs
 
+      - name: Baixar obras e planilhas orçamentárias do portal da prefeitura
+        continue-on-error: true
+        run: node scripts/baixar-portal-obras.mjs
+
       - name: Baixar contratações e documentos do PNCP
         continue-on-error: true
         run: node scripts/baixar-pncp.mjs "$(date -u +%Y)"
@@ -47,7 +51,7 @@ jobs:
 
       - name: Commit se o TCE publicou algo novo
         run: |
-          git add dados/tce dados/tce-obras dados/obrasgov dados/pncp dados/sinapi dados/cnpj dados/ibge
+          git add dados/tce dados/tce-obras dados/obrasgov dados/pncp dados/sinapi dados/portal-foz dados/cnpj dados/ibge
           if git diff --cached --quiet; then
             echo "Nada mudou no TCE-PR."
             exit 0

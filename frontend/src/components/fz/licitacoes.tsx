@@ -13,6 +13,7 @@ import { ORIGENS, type Origem } from "@/lib/licitacoes/fornecedores";
 import { rotuloGestao } from "@/lib/licitacoes/gestao";
 import { MODALIDADES_COMPETITIVAS, type Licitacao, type Vencedor } from "@/lib/licitacoes/modelo";
 import type { CasamentoPncp } from "@/lib/licitacoes/pncp";
+import { unidadePorExtenso, type Comparacao } from "@/lib/precos/sinapi";
 import { SINAIS, type EstadoSinal, type ResultadoSinais } from "@/lib/licitacoes/sinais";
 
 /** Página do SIC da prefeitura no Portal da Transparência (pedido via e-SIC ou presencial). Conferir: pendência 5. */
@@ -376,6 +377,94 @@ function SinaisDeRisco({ r }: { r: ResultadoSinais }) {
   );
 }
 
+const brl = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+/** Régua: faixa de referência (SINAPI + BDI), preço típico e o preço pago por Foz. */
+export function ReguaPreco({ c, grande = false }: { c: Comparacao; grande?: boolean }) {
+  const lo = Math.min(c.faixa.min, c.pago) * 0.85;
+  const hi = Math.max(c.faixa.max, c.pago) * 1.1;
+  const pos = (v: number) => ((v - lo) / (hi - lo)) * 100;
+  const acima = c.situacao === "acima";
+  const h = grande ? 110 : 30;
+  return (
+    <div
+      role="img"
+      aria-label={`Foz pagou ${brl(c.pago)} por ${c.unidade}. Faixa de referência do SINAPI com BDI: ${brl(c.faixa.min)} a ${brl(c.faixa.max)}.`}
+      className="relative mx-2"
+      style={{ height: h }}
+    >
+      <div className="absolute inset-x-0 h-0.5 bg-linha" style={{ top: h / 2 - 1 }} />
+      <div
+        className="absolute rounded-md bg-verde-200"
+        style={{ left: `${pos(c.faixa.min)}%`, width: `${pos(c.faixa.max) - pos(c.faixa.min)}%`, top: h / 2 - (grande ? 17 : 7), height: grande ? 34 : 14 }}
+      />
+      <div className="absolute w-0.5 bg-cinza-700" style={{ left: `${pos(c.faixa.tipico)}%`, top: h / 2 - (grande ? 23 : 10), height: grande ? 46 : 20 }} />
+      <div
+        className={`absolute rounded-full border-2 border-white ${acima ? "bg-alerta-700" : "bg-tinta"}`}
+        style={{ left: `${pos(c.pago)}%`, marginLeft: grande ? -17 : -7, top: h / 2 - (grande ? 17 : 7), width: grande ? 34 : 14, height: grande ? 34 : 14 }}
+      />
+      {grande && (
+        <>
+          <div className={`absolute top-0 -translate-x-1/2 text-[16px] font-extrabold whitespace-nowrap ${acima ? "text-alerta-800" : "text-tinta"}`} style={{ left: `${pos(c.pago)}%` }}>
+            Foz {brl(c.pago)}
+          </div>
+          <div className="absolute bottom-0 -translate-x-1/2 text-[14px] whitespace-nowrap text-cinza-700" style={{ left: `${pos((c.faixa.min + c.faixa.max) / 2)}%` }}>
+            Referência: {brl(c.faixa.min)} a {brl(c.faixa.max)}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+export function frasePreco(c: Comparacao): string {
+  const base = `Foz pagou ${brl(c.pago)} por ${unidadePorExtenso(c.unidade)}. Pelo SINAPI do Paraná, com o BDI de referência do TCU, a faixa vai de ${brl(c.faixa.min)} a ${brl(c.faixa.max)}.`;
+  if (c.situacao === "acima") return `${base} Foz pagou ${Math.round(c.acima * 100)}% acima do topo da faixa.`;
+  if (c.situacao === "abaixo") return `${base} Foz pagou abaixo da faixa.`;
+  return `${base} O preço de Foz está dentro da faixa.`;
+}
+
+function PrecosSinapi({ cs }: { cs: Comparacao[] }) {
+  return (
+    <section className="flex flex-col gap-2.5">
+      <h3 className="text-[16px] font-bold">Preço comparado ao SINAPI</h3>
+      {cs.map((c) => (
+        <div key={c.cesta.id + c.item.descricao} className="flex flex-col gap-2 border-t border-cinza-100 py-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <strong className="text-[15px]">{c.cesta.nome}</strong>
+            <span
+              className={`rounded-full px-[9px] py-1 text-[12px] font-bold ${
+                c.situacao === "acima" ? "bg-alerta-100 text-alerta-800" : "bg-verde-100 text-verde-800"
+              }`}
+            >
+              {c.situacao === "acima" ? "Acima da faixa de referência" : c.situacao === "abaixo" ? "Abaixo da faixa" : "Dentro da faixa"}
+            </span>
+          </div>
+          <ReguaPreco c={c} />
+          <p className="text-[14px] leading-normal text-cinza-700">{frasePreco(c)}</p>
+          <p className="text-[13px] leading-normal text-cinza-600">
+            SINAPI {c.sinapi.mes.slice(5)}/{c.sinapi.mes.slice(0, 4)}, código {c.sinapi.codigos.join(" e ")}, preço posto usina (sem frete até
+            Foz). {c.cesta.nota}
+          </p>
+        </div>
+      ))}
+      <div className="flex flex-wrap gap-x-[18px] gap-y-1.5 text-[13px] text-cinza-700">
+        <span className="flex items-center gap-1.5">
+          <span className="h-2.5 w-[22px] rounded-[3px] bg-verde-200" />
+          Faixa de referência
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-3.5 w-0.5 bg-cinza-700" />
+          Preço típico
+        </span>
+        <Link href="/licitacoes/metodologia#preco" className="font-semibold text-verde-700 hover:text-verde-800">
+          Como comparamos
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 function NoPncp({ l, c }: { l: Licitacao; c: CasamentoPncp }) {
   if (c.estado === "sem-dados") return null;
   if (c.estado === "nao-achada")
@@ -426,11 +515,13 @@ export function FichaLicitacao({
   l,
   fontes,
   sinais,
+  precos = [],
   titulo = "h2",
 }: {
   l: Licitacao;
   fontes: FonteDado[];
   sinais?: ResultadoSinais | null;
+  precos?: Comparacao[];
   titulo?: "h1" | "h2";
 }) {
   const Titulo = titulo;
@@ -494,6 +585,8 @@ export function FichaLicitacao({
         )}
 
         {sinais && <SinaisDeRisco r={sinais} />}
+
+        {precos.length > 0 && <PrecosSinapi cs={precos} />}
 
         <Secao titulo="Quem disputou">
           <p className="text-[15px]">

@@ -143,6 +143,33 @@ export default function Page() {
         </p>
       </Secao>
 
+      <Secao titulo="Preço comparado ao SINAPI" id="preco">
+        <p>
+          Para materiais e serviços de obra, a referência oficial de preço é o{" "}
+          <a className="text-verde-700 underline" href="https://www.caixa.gov.br/poder-publico/modernizacao-gestao/sinapi/">
+            SINAPI
+          </a>
+          , mantido pela Caixa e pelo IBGE (Lei 14.133, art. 23, §2º). Usamos o relatório mensal mais recente, preços medianos do Paraná,
+          sem desoneração.
+        </p>
+        <p>
+          A prefeitura de Foz não usa código de catálogo nos itens que compra, então não dá para casar cada item automaticamente. A
+          comparação usa uma <strong>cesta curada</strong>: cada item de Foz é ligado à mão a um insumo do SINAPI, conferindo
+          especificação e unidade, e o motivo fica registrado. Itens sem correspondência confiável ficam de fora (por exemplo, CBUQ faixa
+          D e emulsão RR-1C, que o SINAPI não tem na mesma especificação).
+        </p>
+        <p>
+          O preço do SINAPI não inclui o BDI do fornecedor (lucro, impostos e despesas indiretas); o preço de uma licitação inclui. Por
+          isso a <strong>faixa de referência</strong> vai do preço do SINAPI com o BDI do 1º quartil ao preço com o BDI do 3º quartil
+          adotados pelo TCU para fornecimento de materiais (Acórdão 2.622/2013: 11,10% e 16,80%); o preço típico usa o BDI médio
+          (14,02%).
+        </p>
+        <p>
+          Limites: o SINAPI dá o preço na usina, coletado em Curitiba, sem o frete até Foz, o que pode explicar parte de uma diferença.
+          Preço acima da faixa não prova sobrepreço; mostra onde vale pedir a justificativa do preço estimado.
+        </p>
+      </Secao>
+
       <Secao titulo="Houve disputa?">
         <p>
           O passo “Houve disputa?” da explicação separa as licitações com vencedor em grupos: pregões e concorrências com duas ou mais

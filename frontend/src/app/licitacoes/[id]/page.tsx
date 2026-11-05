@@ -7,6 +7,7 @@ import { publica } from "@/lib/licitacoes/consulta";
 import { fontesLicitacoes } from "@/lib/licitacoes/fontes";
 import { licitacaoPorId, licitacoes } from "@/lib/licitacoes/modelo";
 import { sinaisDaLicitacao } from "@/lib/licitacoes/sinais";
+import { compararLicitacao } from "@/lib/precos/sinapi";
 import { anos } from "@/lib/tce/dados";
 
 // Algumas centenas por ano: todas geradas na build.
@@ -46,6 +47,6 @@ async function FichaEmCache({ id }: { id: string }) {
   "use cache";
   const l = await licitacaoPorId(id);
   if (!l) notFound();
-  const [fontes, sinais] = await Promise.all([fontesLicitacoes(l.ano), sinaisDaLicitacao(l)]);
-  return <FichaLicitacao l={publica(l)} fontes={fontes} sinais={sinais} titulo="h1" />;
+  const [fontes, sinais, precos] = await Promise.all([fontesLicitacoes(l.ano), sinaisDaLicitacao(l), compararLicitacao(l)]);
+  return <FichaLicitacao l={publica(l)} fontes={fontes} sinais={sinais} precos={precos} titulo="h1" />;
 }

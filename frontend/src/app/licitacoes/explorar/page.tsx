@@ -8,6 +8,7 @@ import { consultarLicitacoes, lerParametrosLicitacoes, opcoes, publica, urlLicit
 import { fontesLicitacoes } from "@/lib/licitacoes/fontes";
 import { entidadesDe, licitacoes } from "@/lib/licitacoes/modelo";
 import { sinaisDe } from "@/lib/licitacoes/sinais";
+import { compararLicitacao } from "@/lib/precos/sinapi";
 import { FichaObra, FiltrosObras, ItemObra } from "@/components/fz/obras";
 import { consultarObras, lerParametrosObras, type ParametrosObras } from "@/lib/obras/consulta";
 import { obras } from "@/lib/obras/modelo";
@@ -54,6 +55,7 @@ async function AbaLicitacoes({ p }: { p: ParametrosLicitacoes }) {
     a.localeCompare(b, "pt-BR"),
   );
   const selecionada = p.sel ? todas.find((l) => l.id === p.sel) : undefined;
+  const precos = selecionada ? await compararLicitacao(selecionada) : [];
   const porCidade = p.agrupar === "cidade";
 
   return (
@@ -121,7 +123,7 @@ async function AbaLicitacoes({ p }: { p: ParametrosLicitacoes }) {
           <div className="max-lg:hidden">
             <div className="sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
               {selecionada ? (
-                <FichaLicitacao l={publica(selecionada)} fontes={fontes} sinais={sinais.get(selecionada.id)} />
+                <FichaLicitacao l={publica(selecionada)} fontes={fontes} sinais={sinais.get(selecionada.id)} precos={precos} />
               ) : (
                 <p className="rounded-2xl border border-dashed border-cinza-300 bg-white p-6 text-[17px] text-cinza-600">
                   Escolha uma licitação na lista para ver a ficha.

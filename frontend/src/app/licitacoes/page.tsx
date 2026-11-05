@@ -12,6 +12,7 @@ import type { Origem } from "@/lib/licitacoes/fornecedores";
 import { licitacoes } from "@/lib/licitacoes/modelo";
 import { anos } from "@/lib/tce/dados";
 import { ATIVAS, obras as todasObras, type Alerta } from "@/lib/obras/modelo";
+import { compararTodas, unidadePorExtenso as porExtenso } from "@/lib/precos/sinapi";
 
 export const metadata: Metadata = { title: "Para onde vai o dinheiro das compras de Foz" };
 
@@ -48,6 +49,8 @@ const TEXTO_OBRA: Partial<Record<Alerta, [string, string]>> = {
 };
 
 const pct = (f: number) => `${Math.round(f * 100)}%`;
+const brl = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
 
 export default function Page() {
   return (
@@ -122,6 +125,9 @@ async function HistoriaReal() {
   const [ano] = await anos();
   if (!ano) return <Container className="py-16">Nenhum dado do TCE-PR em dados/tce.</Container>;
   const [todas, fontes, listaObras] = await Promise.all([licitacoes(ano), fontesLicitacoes(ano), todasObras()]);
+  // Passo "O preço": a comparação com o SINAPI de maior valor, só entre correspondências exatas da cesta.
+  const comparacoes = (await compararTodas(todas)).filter((c) => !c.cesta.aproximada).sort((a, b) => b.item.valor - a.item.valor);
+  const cp = comparacoes[0];
   // Mesmo recorte do explorador sem filtros: a prefeitura (administração direta).
   const ls = filtrar(todas, {});
   const comVencedor = ls.filter((l) => l.valorHomologado !== null);
@@ -225,6 +231,23 @@ async function HistoriaReal() {
           } satisfies Passo,
         ]
       : []),
+    ...(cp
+      ? [
+          {
+            visual: "preco",
+            kicker: "O preço",
+            lead: "E o preço? Para materiais de obra, a referência oficial é o SINAPI, da Caixa e do IBGE.",
+            body: `${cp.licitacao.modalidade} ${cp.licitacao.numero}: Foz pagou ${brl(cp.pago)} por ${porExtenso(cp.unidade)} de ${cp.cesta.nome}, em ${formatarMoedaCurta(
+              cp.item.valor,
+            )}. Pelo SINAPI do Paraná, somado o lucro e os impostos de referência do TCU, a faixa vai de ${brl(cp.faixa.min)} a ${brl(cp.faixa.max)}.${
+              cp.situacao === "acima" ? ` Foz pagou ${Math.round(cp.acima * 100)}% acima do topo.` : " O preço de Foz está dentro da faixa."
+            }`,
+            nota: "A referência é o preço na usina, sem o frete de Curitiba até Foz; parte da diferença pode vir daí. Preço acima da referência não prova sobrepreço.",
+            link: { href: `/licitacoes/${cp.licitacao.id}`, texto: "Ver a compra" },
+            fonte: "TCE-PR e SINAPI",
+          } satisfies Passo,
+        ]
+      : []),
     {
       visual: "fim",
       kicker: "Sua vez",
@@ -251,6 +274,21 @@ async function HistoriaReal() {
       destaque: c.origem === "foz",
       cor: COR[c.origem],
     })),
+    preco: cp
+      ? (() => {
+          const lo = Math.min(cp.faixa.min, cp.pago) * 0.85;
+          const hi = Math.max(cp.faixa.max, cp.pago) * 1.1;
+          const pos = (v: number) => ((v - lo) / (hi - lo)) * 100;
+          return {
+            nome: cp.cesta.nome,
+            unidade: porExtenso(cp.unidade),
+            pago: brl(cp.pago),
+            faixa: `${brl(cp.faixa.min)} a ${brl(cp.faixa.max)}`,
+            acima: cp.situacao === "acima",
+            pos: { pago: pos(cp.pago), min: pos(cp.faixa.min), max: pos(cp.faixa.max), tipico: pos(cp.faixa.tipico) },
+          };
+        })()
+      : null,
     obras: {
       pontos: ordem.flatMap((a) => atuais.filter((o) => o.alerta === a).map(() => ({ cor: COR_OBRA[a]! }))),
       legenda: legendaObras,

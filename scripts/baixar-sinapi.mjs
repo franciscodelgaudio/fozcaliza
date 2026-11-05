@@ -7,13 +7,14 @@
 //
 //   node scripts/baixar-sinapi.mjs            # mês mais recente publicado
 //   node scripts/baixar-sinapi.mjs 2026-09    # mês escolhido
+//   node scripts/baixar-sinapi.mjs --forcar   # baixa de novo mesmo se o mês já existir
 //
 // O arquivo da Caixa é nacional (~16 MB, todos os estados); só a coluna do PR é
 // gravada, com o sha256 do zip original em fonte.json para conferência. O site da
 // Caixa exige um cookie de sessão: o script segue os redirecionamentos guardando-o.
 
 import { createHash } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
+import { access, mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { inflateRawSync } from "node:zlib";
@@ -133,7 +134,12 @@ async function mesesCandidatos() {
 }
 
 await obter("https://www.caixa.gov.br/site/Paginas/downloads.aspx"); // cookie de sessão
+const forcar = process.argv.includes("--forcar");
 for (const mes of await mesesCandidatos()) {
+  if (!forcar && (await access(join(RAIZ, mes, "fonte.json")).then(() => true, () => false))) {
+    console.log(`${mes}: já baixado (use --forcar para baixar de novo)`);
+    break;
+  }
   const r = await obter(URL_MES(mes));
   if (r.status === 404) {
     console.log(`${mes}: ainda não publicado`);

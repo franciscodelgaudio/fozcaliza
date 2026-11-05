@@ -31,7 +31,8 @@ export type BarraDisputa = {
 };
 export type PontoObra = { cor: string };
 export type LegendaObra = { cor: string; n: number; texto: string };
-export type Visual = "total" | "origem" | "cidades" | "obras" | "disputa" | "fim";
+export type PrecoHistoria = { nome: string; unidade: string; pago: string; faixa: string; acima: boolean; pos: { pago: number; min: number; max: number; tipico: number } };
+export type Visual = "total" | "origem" | "cidades" | "obras" | "disputa" | "preco" | "fim";
 export type Passo = {
   visual: Visual;
   kicker: string;
@@ -39,6 +40,8 @@ export type Passo = {
   body: string;
   nota?: string;
   link?: { href: string; texto: string };
+  /** Fonte do selo "Dado real" deste passo (padrão: a da história). */
+  fonte?: string;
 };
 
 export type DadosHistoria = {
@@ -49,6 +52,7 @@ export type DadosHistoria = {
   cidades: Cidade[];
   disputa: BarraDisputa[];
   obras: { pontos: PontoObra[]; legenda: LegendaObra[]; descricao: string };
+  preco: PrecoHistoria | null;
   passos: Passo[];
   fonte: string;
 };
@@ -224,6 +228,50 @@ function GraficoDisputa({ d, ativo }: { d: DadosHistoria; ativo: boolean }) {
   );
 }
 
+function GraficoPreco({ d, ativo }: { d: DadosHistoria; ativo: boolean }) {
+  const p = d.preco;
+  if (!p) return null;
+  return (
+    <>
+      <strong className="text-[18px] sm:text-[22px]">{p.nome}, por {p.unidade}</strong>
+      <div role="img" aria-label={`Foz pagou ${p.pago}. Referência do SINAPI com BDI: ${p.faixa}.`} className="relative mx-3 h-[110px]">
+        <div className="absolute inset-x-0 top-[54px] h-0.5 bg-linha" />
+        <div
+          className="absolute top-[38px] h-[34px] rounded-md bg-verde-200"
+          style={{ left: `${p.pos.min}%`, width: `${p.pos.max - p.pos.min}%` }}
+        />
+        <div className="absolute top-8 h-[46px] w-[3px] bg-cinza-700" style={{ left: `${p.pos.tipico}%` }} />
+        <div
+          className={`absolute top-[37px] -ml-[17px] size-[34px] rounded-full border-[3px] border-white ${p.acima ? "bg-alerta-700" : "bg-tinta"}`}
+          style={{ left: `${ativo ? p.pos.pago : p.pos.tipico}%`, transition: `left 1100ms ${curva} 200ms` }}
+        />
+        <div
+          className={`absolute top-0 -translate-x-1/2 text-[15px] font-extrabold whitespace-nowrap sm:text-[16px] ${p.acima ? "text-alerta-800" : "text-tinta"}`}
+          style={{ left: `${ativo ? p.pos.pago : p.pos.tipico}%`, transition: `left 1100ms ${curva} 200ms` }}
+        >
+          Foz {p.pago}
+        </div>
+        <div
+          className="absolute top-[86px] -translate-x-1/2 text-[13px] whitespace-nowrap text-cinza-700 sm:text-[14px]"
+          style={{ left: `${(p.pos.min + p.pos.max) / 2}%` }}
+        >
+          Referência: {p.faixa}
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-x-[18px] gap-y-1.5 text-[13px] text-cinza-700 sm:text-[14px]">
+        <span className="flex items-center gap-1.5">
+          <span className="h-2.5 w-[22px] rounded-[3px] bg-verde-200" />
+          SINAPI-PR + BDI de referência
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-3.5 w-0.5 bg-cinza-700" />
+          Preço típico
+        </span>
+      </div>
+    </>
+  );
+}
+
 function Acoes() {
   const secundario =
     "flex min-h-14 items-center justify-between gap-3 rounded-[14px] border border-verde-borda bg-white px-5 text-[16px] font-semibold text-verde-700 hover:bg-verde-050 sm:px-6 sm:text-[17px]";
@@ -302,6 +350,7 @@ function Cartao({ d, s, i }: { d: DadosHistoria; s: Passo; i: number }) {
         {s.visual === "cidades" && <GraficoCidades d={d} ativo={visto} />}
         {s.visual === "obras" && <GraficoObras d={d} ativo={visto} />}
         {s.visual === "disputa" && <GraficoDisputa d={d} ativo={visto} />}
+        {s.visual === "preco" && <GraficoPreco d={d} ativo={visto} />}
         {fim && <Acoes />}
       </div>
 
@@ -318,7 +367,7 @@ function Cartao({ d, s, i }: { d: DadosHistoria; s: Passo; i: number }) {
             </Link>
           )}
           <span className="self-start rounded-md bg-verde-100 px-[9px] py-[5px] text-[11px] font-extrabold tracking-[0.08em] text-verde-800 uppercase">
-            Dado real · {d.fonte}
+            Dado real · {s.fonte ?? d.fonte}
           </span>
         </div>
       )}
@@ -449,6 +498,16 @@ function Painel({ d }: { d: DadosHistoria }) {
                 >
                   <GraficoObras d={d} ativo={visual === "obras"} />
                 </div>
+                {d.preco && (
+                  <div
+                    aria-hidden={visual !== "preco"}
+                    className="absolute inset-0 flex flex-col justify-center gap-6"
+                    style={camada(visual === "preco", avancando)}
+                  >
+                    <GraficoPreco d={d} ativo={visual === "preco"} />
+                  </div>
+                )}
+
                 <div
                   aria-hidden={visual !== "disputa"}
                   className="absolute inset-0 flex flex-col justify-center gap-[18px]"
@@ -509,7 +568,7 @@ function Painel({ d }: { d: DadosHistoria }) {
                 real ? "bg-verde-100 text-verde-800" : "bg-cinza-100 text-cinza-700"
               }`}
             >
-              {real ? `Dado real · ${d.fonte}` : "Sua vez"}
+              {real ? `Dado real · ${d.passos[passo].fonte ?? d.fonte}` : "Sua vez"}
             </span>
             <div className="flex items-center gap-3">
               <button

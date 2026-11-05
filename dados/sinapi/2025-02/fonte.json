@@ -1,0 +1,19 @@
+{
+ "fonte": "SINAPI — Caixa Econômica Federal / IBGE",
+ "url": "https://www.caixa.gov.br/Downloads/sinapi-relatorios-mensais/SINAPI-2025-02-formato-xlsx.zip",
+ "mes": "2025-02",
+ "uf": "PR",
+ "desoneracao": "sem desoneração",
+ "abas": {
+  "insumos": "ISD",
+  "composicoes": "CSD"
+ },
+ "arquivo_original": {
+  "nome": "SINAPI_Referência_2025_02.xlsx",
+  "zip_sha256": "4761d3acef046f1cd31592f5301bd59cb3291d9e135e0e4e05daacfb7be8e8ee",
+  "zip_bytes": 14507458
+ },
+ "baixado_em": "2026-11-05T01:13:42.201Z",
+ "insumos": 4835,
+ "composicoes": 9647
+}

@@ -1,0 +1,19 @@
+{
+ "fonte": "SINAPI — Caixa Econômica Federal / IBGE",
+ "url": "https://www.caixa.gov.br/Downloads/sinapi-relatorios-mensais/SINAPI-2026-09-formato-xlsx.zip",
+ "mes": "2026-09",
+ "uf": "PR",
+ "desoneracao": "sem desoneração",
+ "abas": {
+  "insumos": "ISD",
+  "composicoes": "CSD"
+ },
+ "arquivo_original": {
+  "nome": "SINAPI_Referência_2026_09.xlsx",
+  "zip_sha256": "feef29cd107f4bdde9bc10ba03d71eb4d8b6b2e0e95fe9020c4fe72aabe2a04c",
+  "zip_bytes": 15883244
+ },
+ "baixado_em": "2026-11-05T00:57:21.269Z",
+ "insumos": 4878,
+ "composicoes": 10599
+}

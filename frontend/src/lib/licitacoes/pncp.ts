@@ -3,12 +3,18 @@
 // Servem para duas coisas: saber se e quando o edital saiu no portal nacional
 // (sinal 3) e listar os documentos publicados (edital, atas, contratos).
 //
-// Casamento com a licitação do TCE-PR: pelo número do processo administrativo
-// (TCE `nrEditalOrigem/nranoEditalOrigem` = PNCP `processo`), na mesma entidade
-// (CNPJ). Só vale com um único candidato.
+// Casamento com a licitação do TCE-PR, do mais seguro ao menos seguro (validado com
+// os dados de 2026; o número do processo sozinho erra nos dois sentidos):
+// 1. mesmo órgão, valor estimado igual ao centavo e objeto parecido;
+// 2. mesmo órgão, mesmo número de processo e objeto parecido;
+// 3. qualquer órgão de Foz, objeto muito parecido, valor até 25% diferente e
+//    publicação até 120 dias antes da abertura.
+// Republicações (mesmo valor e objeto) contam como achadas: fica a publicação mais
+// próxima, antes da abertura.
 
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { normalizar } from "@/lib/tce/consulta";
 import type { Licitacao } from "./modelo";
 
 export const PASTA_PNCP = process.env.PNCP_DADOS ?? join(process.cwd(), "..", "dados", "pncp");
@@ -100,52 +106,78 @@ async function lerAno(ano: number): Promise<CompraPncp[]> {
   });
 }
 
-const cache = new Map<number, Promise<Map<string, CompraPncp[]>>>();
+const cache = new Map<number, Promise<CompraPncp[]>>();
 
-/** Compras do PNCP do ano, indexadas por "cnpj|processo". */
-function indice(ano: number): Promise<Map<string, CompraPncp[]>> {
+function compras(ano: number): Promise<CompraPncp[]> {
   let p = cache.get(ano);
   if (!p) {
-    p = lerAno(ano).then((cs) => {
-      const m = new Map<string, CompraPncp[]>();
-      for (const c of cs) {
-        if (!c.processo) continue;
-        const k = `${c.cnpj}|${c.processo}`;
-        m.set(k, [...(m.get(k) ?? []), c]);
-      }
-      return m;
-    });
+    p = lerAno(ano);
     p.catch(() => cache.delete(ano));
     cache.set(ano, p);
   }
   return p;
 }
 
-/** Há dados do PNCP baixados para o ano? (Sem eles, o sinal 3 fica "sem informação".) */
-export async function temPncp(ano: number): Promise<boolean> {
-  try {
-    await readFile(join(PASTA_PNCP, String(ano), "fonte.json"));
-    return true;
-  } catch {
-    return false;
-  }
+// Palavras que não distinguem um objeto de outro.
+const COMUNS = new Set(
+  "para pela pelo como entre sobre conforme demais futura eventual registro precos contratacao empresa especializada aquisicao servicos prestacao municipio iguacu municipal secretaria atender destinados necessidades edital anexos termo referencia".split(
+    " ",
+  ),
+);
+const palavras = (s: string) => new Set(normalizar(s).split(/[^a-z0-9]+/).filter((t) => t.length > 3 && !COMUNS.has(t)));
+/** Semelhança de Jaccard entre as palavras distintivas dos dois objetos. */
+function semelhanca(a: Set<string>, b: Set<string>) {
+  const comuns = [...a].filter((t) => b.has(t)).length;
+  return comuns / Math.max(1, new Set([...a, ...b]).size);
 }
 
 export type CasamentoPncp =
-  | { estado: "achada"; compra: CompraPncp }
+  | { estado: "achada"; compra: CompraPncp; como: "valor" | "processo" | "objeto"; publicacoes: number }
   | { estado: "nao-achada" }
-  | { estado: "sem-chave" }
-  | { estado: "ambigua"; candidatos: number };
+  | { estado: "sem-dados" };
+
+const diasEntre = (a: string, b: string) => (Date.parse(b) - Date.parse(a)) / 86_400_000;
+
+/** Entre republicações, a mais próxima antes da abertura (ou a primeira). */
+function escolher(cs: CompraPncp[], abertura: string | null): CompraPncp {
+  const ordenadas = [...cs].sort((a, b) => (a.publicadoEm ?? "").localeCompare(b.publicadoEm ?? ""));
+  const antes = abertura ? ordenadas.filter((c) => c.publicadoEm && c.publicadoEm <= abertura) : [];
+  return antes.length ? antes[antes.length - 1] : ordenadas[0];
+}
 
 /** Função que acha a compra do PNCP de uma licitação do TCE-PR. */
 export async function casadorPncp(ano: number): Promise<(l: Licitacao) => CasamentoPncp> {
-  const idx = await indice(ano);
+  const todas = await compras(ano);
+  const comPalavras = todas.map((c) => ({ c, p: palavras(c.objeto) }));
   return (l) => {
     const cnpj = CNPJ_ENTIDADE[l.entidade.id];
-    if (!cnpj || !l.processo) return { estado: "sem-chave" };
-    const cs = idx.get(`${cnpj}|${l.processo}`) ?? [];
-    if (cs.length === 1) return { estado: "achada", compra: cs[0] };
-    if (cs.length > 1) return { estado: "ambigua", candidatos: cs.length };
+    if (!todas.length || !cnpj) return { estado: "sem-dados" };
+    const minhas = palavras(l.objeto);
+    const doOrgao = comPalavras.filter((x) => x.c.cnpj === cnpj);
+    const achada = (xs: { c: CompraPncp }[], como: "valor" | "processo" | "objeto"): CasamentoPncp => ({
+      estado: "achada",
+      compra: escolher(
+        xs.map((x) => x.c),
+        l.dataAbertura,
+      ),
+      como,
+      publicacoes: xs.length,
+    });
+
+    const porValor = doOrgao.filter((x) => x.c.valorEstimado !== null && Math.abs(x.c.valorEstimado - l.valorEstimado) < 0.01 && semelhanca(minhas, x.p) >= 0.3);
+    if (porValor.length) return achada(porValor, "valor");
+
+    const porProcesso = l.processo ? doOrgao.filter((x) => x.c.processo === l.processo && semelhanca(minhas, x.p) >= 0.3) : [];
+    if (porProcesso.length) return achada(porProcesso, "processo");
+
+    const porObjeto = comPalavras.filter(
+      (x) =>
+        semelhanca(minhas, x.p) >= 0.6 &&
+        !!x.c.valorEstimado &&
+        Math.abs(x.c.valorEstimado / (l.valorEstimado || 1) - 1) <= 0.25 &&
+        (!l.dataAbertura || (x.c.publicadoEm && diasEntre(x.c.publicadoEm, l.dataAbertura) >= -1 && diasEntre(x.c.publicadoEm, l.dataAbertura) <= 120)),
+    );
+    if (porObjeto.length) return achada(porObjeto, "objeto");
     return { estado: "nao-achada" };
   };
 }

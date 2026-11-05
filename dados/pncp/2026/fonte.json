@@ -1,0 +1,11 @@
+{
+  "fonte": "PNCP — Portal Nacional de Contratações Públicas",
+  "pagina": "https://pncp.gov.br/api/consulta/swagger-ui/index.html",
+  "codigoMunicipioIbge": "4108304",
+  "periodo": {
+    "de": "20250701",
+    "ate": "20261104"
+  },
+  "baixado_em": "2026-11-05T00:05:25.779Z",
+  "contratacoes": 1759
+}

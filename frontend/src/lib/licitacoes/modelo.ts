@@ -320,7 +320,7 @@ async function montar(ano: number, cache: BaseCnpj): Promise<Licitacao[]> {
         dataReferencia: (r.DataReferencia ?? "").trim(),
         ultimoEnvio: r.ultimoEnvioSIMAMNesteExercicio ?? "",
       },
-      pncp: { estado: "sem-chave" },
+      pncp: { estado: "sem-dados" },
     };
   });
   for (const l of ls) l.pncp = casarPncp(l);

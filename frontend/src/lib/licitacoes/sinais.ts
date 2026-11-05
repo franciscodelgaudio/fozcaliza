@@ -26,16 +26,17 @@ export const SINAIS: DefinicaoSinal[] = [
   },
   {
     id: 3,
-    titulo: "Edital fora do portal nacional",
-    explicacao: "atraso no envio ao PNCP ou número de processo informado diferente.",
+    titulo: "Edital não encontrado no portal nacional",
+    explicacao: "publicação com valor e descrição diferentes dos informados ao TCE-PR, ou atraso no envio ao PNCP.",
     regra:
-      "Pregão ou concorrência que não aparece no PNCP pelo número do processo, ou que só foi publicada lá depois da abertura das propostas. Sem número de processo, ou com mais de uma compra com o mesmo número, fica sem informação.",
+      "Pregão ou concorrência que não foi encontrada no PNCP (nem pelo valor, nem pelo número do processo, nem pelo objeto), ou que só foi publicada lá depois da abertura das propostas.",
   },
   {
     id: 4,
     titulo: "Prazo curto para propostas",
     explicacao: "urgência real e documentada.",
-    regra: "Pregão ou concorrência com menos de 8 dias úteis entre o edital e a abertura (o menor prazo da Lei 14.133, art. 55).",
+    regra:
+      "Pregão ou concorrência com menos dias úteis entre a divulgação do edital no PNCP e a data das propostas do que o mínimo da Lei 14.133 (art. 55): 8 para bens e serviços comuns, 10 para obras e serviços de engenharia, 15 para maior lance, 35 para técnica e preço. Sem a publicação no PNCP, conta da data do edital informada ao TCE-PR. Feriados nacionais são descontados.",
   },
   {
     id: 5,
@@ -67,14 +68,71 @@ export type ResultadoSinais = {
 const DIA = 86_400_000;
 const dataUtc = (s: string) => Date.parse(`${s}T00:00:00Z`);
 
-/** Dias úteis (seg–sex) a partir do dia seguinte a `de` até `ate`, inclusive. Feriados não são descontados. */
+/** Domingo de Páscoa (algoritmo de Meeus/Jones/Butcher), como AAAA-MM-DD. */
+function pascoa(ano: number): string {
+  const a = ano % 19;
+  const b = Math.floor(ano / 100);
+  const c = ano % 100;
+  const d = Math.floor(b / 4);
+  const e = b % 4;
+  const f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4);
+  const k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const mes = Math.floor((h + l - 7 * m + 114) / 31);
+  const dia = ((h + l - 7 * m + 114) % 31) + 1;
+  return `${ano}-${String(mes).padStart(2, "0")}-${String(dia).padStart(2, "0")}`;
+}
+
+const feriadosCache = new Map<number, Set<string>>();
+/**
+ * Feriados nacionais (Lei 662/1949, Lei 6.802/1980, Lei 14.759/2023) e Sexta-feira Santa.
+ * Pontos facultativos (Carnaval, Corpus Christi) e feriados municipais não entram:
+ * descontar menos dias evita acender o sinal por um dia que pode ter sido útil.
+ */
+function feriados(ano: number): Set<string> {
+  let f = feriadosCache.get(ano);
+  if (!f) {
+    const sextaSanta = new Date(dataUtc(pascoa(ano)) - 2 * DIA).toISOString().slice(0, 10);
+    f = new Set(["01-01", "04-21", "05-01", "09-07", "10-12", "11-02", "11-15", "11-20", "12-25"].map((d) => `${ano}-${d}`));
+    f.add(sextaSanta);
+    feriadosCache.set(ano, f);
+  }
+  return f;
+}
+
+/** Dias úteis a partir do dia seguinte a `de` até `ate`, inclusive (sem fins de semana e feriados nacionais). */
 export function diasUteis(de: string, ate: string): number {
   let n = 0;
   for (let t = dataUtc(de) + DIA, fim = dataUtc(ate); t <= fim; t += DIA) {
-    const d = new Date(t).getUTCDay();
-    if (d !== 0 && d !== 6) n++;
+    const dt = new Date(t);
+    const d = dt.getUTCDay();
+    if (d !== 0 && d !== 6 && !feriados(dt.getUTCFullYear()).has(dt.toISOString().slice(0, 10))) n++;
   }
   return n;
+}
+
+/** Prazo mínimo de propostas (Lei 14.133, art. 55) pelo que o TCE-PR informa do objeto e do critério. */
+export function prazoMinimo(l: Licitacao): number {
+  const criterio = l.criterio ?? "";
+  if (/t[ée]cnica/i.test(criterio)) return 35;
+  // "Maior lance" só existe em venda ou concessão; em contratação/aquisição é erro de cadastro no TCE-PR.
+  if (/maior lance/i.test(criterio) && !/^\s*(contrata|aquisi|registro de pre)/i.test(l.objeto)) return 15;
+  if (l.tipoObjeto === "obras") return 10;
+  // Bens e serviços comuns vêm juntos no TCE-PR; usa o menor (8, bens) para não acender à toa.
+  return 8;
+}
+
+/** Datas usadas no sinal 4: divulgação (PNCP, ou edital do TCE-PR) e data das propostas. */
+export function prazoPropostas(l: Licitacao): { de: string; ate: string; fonte: "pncp" | "tce"; diasUteis: number; minimo: number } | null {
+  const pncp = l.pncp.estado === "achada" ? l.pncp.compra : null;
+  const de = pncp?.publicadoEm ?? l.dataEdital;
+  const ate = pncp?.encerramentoPropostas ?? l.dataAbertura;
+  if (!de || !ate || ate < de) return null;
+  return { de, ate, fonte: pncp?.publicadoEm ? "pncp" : "tce", diasUteis: diasUteis(de, ate), minimo: prazoMinimo(l) };
 }
 
 const dias = (de: string, ate: string) => Math.round((dataUtc(ate) - dataUtc(de)) / DIA);
@@ -87,9 +145,6 @@ function percentil(ordenados: number[], p: number) {
   return ordenados[a] + (ordenados[b] - ordenados[a]) * (i - a);
 }
 
-const PRAZO_MINIMO_DIAS_UTEIS = 8;
-/** Licitação com processo informado e ausente do PNCP conta como sinal (ver validação na metodologia). */
-const NAO_ACHADA_E_SINAL = true;
 const MESES_EMPRESA_NOVA = 12;
 const FATIA_CONCENTRACAO = 0.25;
 const MIN_LICITACOES_SECRETARIA = 5;
@@ -147,17 +202,14 @@ export function sinaisDe(todas: Licitacao[]): Map<string, ResultadoSinais> {
       const p = l.pncp;
       if (p.estado === "achada")
         s3 = p.compra.publicadoEm && l.dataAbertura ? (p.compra.publicadoEm > l.dataAbertura ? "presente" : "ausente") : "ausente";
-      else s3 = p.estado === "nao-achada" && NAO_ACHADA_E_SINAL ? "presente" : "sem-informacao";
+      else s3 = p.estado === "nao-achada" ? "presente" : "sem-informacao";
     }
 
     let s4: EstadoSinal = "nao-se-aplica";
-    if (comp)
-      s4 =
-        l.dataEdital && l.dataAbertura && l.dataAbertura >= l.dataEdital
-          ? diasUteis(l.dataEdital, l.dataAbertura) < PRAZO_MINIMO_DIAS_UTEIS
-            ? "presente"
-            : "ausente"
-          : "sem-informacao";
+    if (comp) {
+      const pz = prazoPropostas(l);
+      s4 = !pz ? "sem-informacao" : pz.diasUteis < pz.minimo ? "presente" : "ausente";
+    }
 
     let s5: EstadoSinal = "nao-se-aplica";
     if (comp) {

@@ -123,9 +123,23 @@ export default function Page() {
           <a className="text-verde-700 underline" href="https://pncp.gov.br">
             Portal Nacional de Contratações Públicas
           </a>
-          . Baixamos as contratações publicadas por órgãos de Foz do Iguaçu e a lista de documentos de cada uma. A licitação do TCE-PR é
-          ligada à compra do PNCP pelo <strong>número do processo administrativo</strong>, na mesma entidade; só vale quando há uma única
-          compra com aquele número. A ficha mostra a data de publicação no PNCP e os documentos, com link direto.
+          . Baixamos as contratações publicadas por órgãos de Foz do Iguaçu e a lista de documentos de cada uma. A ficha mostra a data de
+          publicação no PNCP e os documentos, com link direto.
+        </p>
+        <p>
+          O TCE-PR e o PNCP não têm um identificador em comum. O número do processo informado ao TCE-PR, testado sozinho, errou nos dois
+          sentidos: ligou compras diferentes que tinham o mesmo número e deixou de achar compras publicadas com outro número. Por isso a
+          ligação é feita nesta ordem, parando na primeira que achar:
+        </p>
+        <ol className="list-decimal space-y-2 pl-6">
+          <li>mesmo órgão, mesmo valor estimado (ao centavo) e objeto parecido;</li>
+          <li>mesmo órgão, mesmo número de processo e objeto parecido;</li>
+          <li>qualquer órgão de Foz, objeto muito parecido, valor até 25% diferente e publicação até 120 dias antes da abertura.</li>
+        </ol>
+        <p>
+          Republicações da mesma licitação contam como publicada; a ficha mostra a mais próxima da abertura. Nos dados de 2026, 61 dos 78
+          pregões e concorrências da prefeitura foram achados. Os outros acendem o sinal 3 — o que não prova que não foram publicados: podem
+          ter ido ao PNCP com valor e descrição diferentes dos informados ao TCE-PR.
         </p>
       </Secao>
 
@@ -204,8 +218,8 @@ export default function Page() {
           <li>Licitações: por enquanto só há dados de 2026. Obras: de 2013 a 2026.</li>
           <li>Muitos pregões não têm participantes publicados no TCE-PR; nesses casos a ficha diz isso em vez de supor um número.</li>
           <li>
-            O sinal 3 depende do número do processo informado ao TCE-PR. Se a prefeitura informa um número diferente do que publicou no
-            PNCP, a licitação aparece como fora do portal sem estar; por isso a ficha mostra o número procurado.
+            O sinal 3 depende de achar a licitação no PNCP sem um identificador comum; uma licitação publicada com dados muito diferentes
+            dos informados ao TCE-PR aparece como não encontrada.
           </li>
           <li>O PNCP publica só os vencedores, não a lista de participantes; pregões sem participantes no TCE-PR continuam sem essa informação.</li>
           <li>O percentual físico de cada obra não é publicado pelo TCE-PR; só aparece para obras com recurso federal no Obrasgov.br.</li>

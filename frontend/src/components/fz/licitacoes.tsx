@@ -377,15 +377,14 @@ function SinaisDeRisco({ r }: { r: ResultadoSinais }) {
 }
 
 function NoPncp({ l, c }: { l: Licitacao; c: CasamentoPncp }) {
-  if (c.estado !== "achada")
+  if (c.estado === "sem-dados") return null;
+  if (c.estado === "nao-achada")
     return (
       <Secao titulo="No portal nacional (PNCP)">
         <p className="text-[15px] text-cinza-700">
-          {c.estado === "sem-chave"
-            ? "O TCE-PR não informou o número do processo desta licitação, então não dá para procurá-la no PNCP."
-            : c.estado === "ambigua"
-              ? `Há ${c.candidatos} compras no PNCP com o processo ${l.processo}; não dá para saber qual é esta.`
-              : `Não encontramos no PNCP nenhuma compra da prefeitura com o processo ${l.processo}.`}
+          Não encontramos esta licitação no PNCP: nenhuma compra de órgão de Foz com o mesmo valor estimado
+          {l.processo ? `, com o processo ${l.processo}` : ""} ou com objeto parecido. Ela pode ter sido publicada com dados
+          diferentes dos informados ao TCE-PR.
         </p>
       </Secao>
     );
@@ -397,7 +396,13 @@ function NoPncp({ l, c }: { l: Licitacao; c: CasamentoPncp }) {
         {p.aberturaPropostas ? ` · propostas a partir de ${formatarData(p.aberturaPropostas)}` : ""}
         {p.encerramentoPropostas ? ` até ${formatarData(p.encerramentoPropostas)}` : ""}
         {p.situacao ? ` · ${p.situacao}` : ""}.
+        {c.publicacoes > 1 ? ` Há ${c.publicacoes} publicações desta licitação (republicações); mostramos a mais próxima da abertura.` : ""}
       </p>
+      {c.como === "objeto" && (
+        <p className="text-[13px] text-cinza-600">
+          Achada pela descrição do objeto: o valor estimado no PNCP ({formatarMoeda(p.valorEstimado ?? 0)}) é diferente do informado ao TCE-PR.
+        </p>
+      )}
       {p.documentos.length > 0 ? (
         <ul className="flex flex-col divide-y divide-linha rounded-xl border border-linha">
           {p.documentos.map((d) => (

@@ -1,0 +1,32 @@
+{
+  "descricao": "Correspondência curada entre itens comprados pela prefeitura (descrição no TCE-PR) e insumos do SINAPI-PR. Cada entrada foi conferida à mão: unidade, especificação e o motivo da escolha. Item sem correspondência confiável no SINAPI fica fora (ver 'fora_da_cesta').",
+  "bdi": {
+    "fonte": "TCU, Acórdão 2.622/2013 — Plenário: BDI de referência para fornecimento de materiais e equipamentos",
+    "materiais": { "primeiro_quartil": 0.111, "medio": 0.1402, "terceiro_quartil": 0.168 }
+  },
+  "itens": [
+    {
+      "id": "cbuq-faixa-c",
+      "nome": "CBUQ faixa C (capa de rolamento)",
+      "termos": ["cbuq", "faixa c"],
+      "unidade": "t",
+      "sinapi": ["1518", "34770"],
+      "bdi": "materiais",
+      "nota": "SINAPI 1518 (CAP 50/70, preço coletado) e 34770 (CAP 30/45). O edital de Foz não diz o CAP; a faixa usa os dois. Unidade confirmada em tonelada no PNCP (o TCE-PR registra 'Unidade')."
+    },
+    {
+      "id": "cbuq-faixa-b",
+      "nome": "CBUQ faixa B (binder)",
+      "termos": ["cbuq", "faixa b"],
+      "unidade": "t",
+      "sinapi": ["41965"],
+      "bdi": "materiais",
+      "nota": "O SINAPI não tem 'faixa B'; usa-se o CBUQ para binder (41965, CAP 50/70), camada para a qual a faixa B do DNIT é especificada. Correspondência aproximada."
+    }
+  ],
+  "fora_da_cesta": [
+    { "item": "CBUQ faixa D", "motivo": "Não há CBUQ faixa D no SINAPI." },
+    { "item": "Emulsão asfáltica RR-1C", "motivo": "O SINAPI-PR só tem emulsão aniônica, vendida por litro; a RR-1C é catiônica e foi comprada por tonelada." },
+    { "item": "Demarcação viária com tinta acrílica (aplicação mecânica)", "motivo": "As composições de aplicação mecânica estão sem preço para o PR; as de aplicação manual não são comparáveis." }
+  ]
+}
